@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+{% block title %}Gym Bhai — Dashboard{% endblock %}
+{% block sb_profile %}active{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
+{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ─────────────────────────────────── -->
+<div class="hero-card">
+    <div class="hero-icon">🏋️</div>
+    <div class="hero-text">
+        <h2>Welcome back, <span>Alex</span>!</h2>
+        <p>You're on a <strong>7-day streak</strong> — don't break the chain. Today is <strong>Push Day</strong>. Log your session and keep that consistency score climbing.</p>
+        <a href="#todays-workout" class="hero-cta">Start Today's Workout →</a>
+    </div>
+</div>
+
+<!-- ── Daily Quote ─────────────────────────── -->
+<div class="section-heading">Daily Motivation</div>
+<div class="quote-section">
+    <div class="quote-card">
+        <div class="quote-content">
+            <div class="quote-text" id="quote-text">{{ quote.text }}</div>
+            <div class="quote-author" id="quote-author">— {{ quote.author }}</div>
+        </div>
+        <button class="quote-refresh-btn" id="quote-refresh-btn" title="Get new quote">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <polyline points="23 4 23 10 17 10"/>
+                <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+            </svg>
+            <span>New Quote</span>
+        </button>
+    </div>
+</div>
+
+<!-- ── Pre / Post Workout Bars ──────────────── -->
+<div class="section-heading">Session Log</div>
+<div class="workout-bars">
+
+    <!-- Pre-workout -->
+    <div class="workout-bar-trigger pre" id="pre-workout-trigger">
+        <div class="bar-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+        </div>
+        <div class="bar-info">
+            <div class="bar-title">Pre-Workout Check-in</div>
+            <div class="bar-sub">Log energy, nutrition &amp; goals before training</div>
+        </div>
+        <div class="bar-chevron">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Post-workout -->
+    <div class="workout-bar-trigger post" id="post-workout-trigger">
+        <div class="bar-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+        </div>
+        <div class="bar-info">
+            <div class="bar-title">Post-Workout Review</div>
+            <div class="bar-sub">Rate your session, log recovery &amp; notes</div>
+        </div>
+        <div class="bar-chevron">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"/>
+            </svg>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── Today's Workout ──────────────────────── -->
+<div class="section-heading" id="todays-workout">Today's Workout</div>
+<div class="todays-workout" style="margin-bottom:32px;">
+    <div class="workout-header">
+        <div class="workout-header-left">
+            <div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+                    <span class="workout-day-badge">Day 4 — Push</span>
+                </div>
+                <div class="workout-title">Chest, Shoulders &amp; Triceps</div>
+                <div class="workout-meta-tag">6 exercises · ~55 min · Intermediate</div>
+            </div>
+        </div>
+        <div class="workout-progress-ring">
+            <svg width="56" height="56" viewBox="0 0 56 56">
+                <circle class="ring-bg"   cx="28" cy="28" r="22"/>
+                <circle class="ring-fill" cx="28" cy="28" r="22"/>
+            </svg>
+            <div class="ring-label">0/6</div>
+        </div>
+    </div>
+
+    <div class="exercise-list">
+
+        <!-- Exercise row template: click checkbox or set dots to mark done -->
+        <div class="exercise-row">
+            <div class="ex-check" title="Mark complete"></div>
+            <div class="ex-info">
+                <div class="ex-name">Bench Press</div>
+                <div class="ex-detail">4 sets · 8–10 reps · 60s rest</div>
+            </div>
+            <div class="ex-sets">
+                <div class="set-dot" title="Set 1"></div>
+                <div class="set-dot" title="Set 2"></div>
+                <div class="set-dot" title="Set 3"></div>
+                <div class="set-dot" title="Set 4"></div>
+            </div>
+        </div>
+
+        <div class="exercise-row">
+            <div class="ex-check"></div>
+            <div class="ex-info">
+                <div class="ex-name">Incline Dumbbell Press</div>
+                <div class="ex-detail">3 sets · 10–12 reps · 60s rest</div>
+            </div>
+            <div class="ex-sets">
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+            </div>
+        </div>
+
+        <div class="exercise-row">
+            <div class="ex-check"></div>
+            <div class="ex-info">
+                <div class="ex-name">Overhead Shoulder Press</div>
+                <div class="ex-detail">4 sets · 8–10 reps · 90s rest</div>
+            </div>
+            <div class="ex-sets">
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+            </div>
+        </div>
+
+        <div class="exercise-row">
+            <div class="ex-check"></div>
+            <div class="ex-info">
+                <div class="ex-name">Lateral Raises</div>
+                <div class="ex-detail">3 sets · 15 reps · 45s rest</div>
+            </div>
+            <div class="ex-sets">
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+            </div>
+        </div>
+
+        <div class="exercise-row">
+            <div class="ex-check"></div>
+            <div class="ex-info">
+                <div class="ex-name">Tricep Rope Pushdown</div>
+                <div class="ex-detail">3 sets · 12 reps · 45s rest</div>
+            </div>
+            <div class="ex-sets">
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+            </div>
+        </div>
+
+        <div class="exercise-row">
+            <div class="ex-check"></div>
+            <div class="ex-info">
+                <div class="ex-name">Overhead Tricep Extension</div>
+                <div class="ex-detail">3 sets · 12 reps · 45s rest</div>
+            </div>
+            <div class="ex-sets">
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+                <div class="set-dot"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ── Consistency + Weekly Report ─────────── -->
+<div class="section-heading">Your Progress</div>
+<div class="stats-grid">
+
+    <!-- Consistency Score -->
+    <div class="consistency-card">
+        <div class="stat-card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+            Consistency Score
+        </div>
+        <div class="consistency-score-wrap">
+            <div class="score-circle">
+                <svg width="90" height="90" viewBox="0 0 90 90">
+                    <circle class="score-ring-bg"   cx="45" cy="45" r="35"/>
+                    <circle class="score-ring-fill" cx="45" cy="45" r="35"/>
+                </svg>
+                <div class="score-label">
+                    <span class="score-num" data-score="78">0</span>
+                    <span class="score-pct">/ 100</span>
+                </div>
+            </div>
+            <div class="consistency-stats">
+                <div class="cstat-row">
+                    <span class="cstat-label">This Month</span>
+                    <span class="cstat-val">22 / 28</span>
+                </div>
+                <div class="cstat-row">
+                    <span class="cstat-label">Best Streak</span>
+                    <span class="cstat-val">12 days</span>
+                </div>
+                <div class="cstat-row">
+                    <span class="cstat-label">Missed</span>
+                    <span class="cstat-val" style="color:#ef4444">6 days</span>
+                </div>
+                <div class="cstat-row">
+                    <span class="cstat-label">Rest Days</span>
+                    <span class="cstat-val" style="color:#888">4 days</span>
+                </div>
+            </div>
+        </div>
+        <div class="consistency-bar-wrap">
+            <div class="cbar-label">
+                <span>Monthly goal progress</span>
+                <span>78%</span>
+            </div>
+            <div class="cbar-track">
+                <div class="cbar-fill" data-pct="78"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Weekly Report -->
+    <div class="weekly-card">
+        <div class="stat-card-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+            Weekly Report
+        </div>
+
+        <div class="weekly-grid">
+            <div class="day-col">
+                <div class="day-label">M</div>
+                <div class="day-bar-wrap"><div class="day-bar active" data-h="90"></div></div>
+                <div class="day-dot done"></div>
+            </div>
+            <div class="day-col">
+                <div class="day-label">T</div>
+                <div class="day-bar-wrap"><div class="day-bar active" data-h="70"></div></div>
+                <div class="day-dot done"></div>
+            </div>
+            <div class="day-col">
+                <div class="day-label">W</div>
+                <div class="day-bar-wrap"><div class="day-bar rest" data-h="20"></div></div>
+                <div class="day-dot skipped"></div>
+            </div>
+            <div class="day-col">
+                <div class="day-label">T</div>
+                <div class="day-bar-wrap"><div class="day-bar active" data-h="80"></div></div>
+                <div class="day-dot done"></div>
+            </div>
+            <div class="day-col">
+                <div class="day-label">F</div>
+                <div class="day-bar-wrap"><div class="day-bar today" data-h="40"></div></div>
+                <div class="day-dot today"></div>
+            </div>
+            <div class="day-col">
+                <div class="day-label">S</div>
+                <div class="day-bar-wrap"><div class="day-bar" data-h="0"></div></div>
+                <div class="day-dot"></div>
+            </div>
+            <div class="day-col">
+                <div class="day-label">S</div>
+                <div class="day-bar-wrap"><div class="day-bar rest" data-h="10"></div></div>
+                <div class="day-dot skipped"></div>
+            </div>
+        </div>
+
+        <div class="weekly-summary">
+            <div class="w-stat">
+                <span class="w-stat-val">4</span>
+                <span class="w-stat-label">Sessions</span>
+            </div>
+            <div class="w-stat">
+                <span class="w-stat-val">3h 40m</span>
+                <span class="w-stat-label">Total Time</span>
+            </div>
+            <div class="w-stat">
+                <span class="w-stat-val">1,840</span>
+                <span class="w-stat-label">Calories</span>
+            </div>
+            <div class="w-stat">
+                <span class="w-stat-val" style="color:#22c55e">+2%</span>
+                <span class="w-stat-label">vs Last Week</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════
+     PRE-WORKOUT MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="pre-modal-overlay">
+    <div class="modal-box pre-modal">
+        <button class="modal-close" data-close-modal="pre-modal-overlay" title="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+        <div class="modal-title"><span>Pre</span>-Workout Check-in</div>
+        <div class="modal-sub">How are you feeling before today's session?</div>
+
+        <form id="pre-workout-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Date</label>
+                    <input class="form-input" type="date" name="date" required />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Time</label>
+                    <input class="form-input" type="time" name="time" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Workout Type</label>
+                <select class="form-select" name="workout_type">
+                    <option>Push (Chest, Shoulders, Triceps)</option>
+                    <option>Pull (Back, Biceps)</option>
+                    <option>Legs</option>
+                    <option>Abs &amp; Core</option>
+                    <option>Cardio</option>
+                    <option>Full Body</option>
+                    <option>Rest Day</option>
+                </select>
+            </div>
+
+            <div class="range-group">
+                <div class="range-header">
+                    <label class="form-label">Energy Level</label>
+                    <span class="range-val" id="energy-val">5</span>
+                </div>
+                <input type="range" name="energy_level" min="1" max="10" value="5"
+                    data-val-target="energy-val" data-suffix="" />
+            </div>
+
+            <div class="range-group">
+                <div class="range-header">
+                    <label class="form-label">Sleep Quality (hrs)</label>
+                    <span class="range-val" id="sleep-val">7</span>
+                </div>
+                <input type="range" name="sleep_hours" min="3" max="10" value="7"
+                    data-val-target="sleep-val" data-suffix="" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Pre-workout Meal</label>
+                <select class="form-select" name="meal">
+                    <option>Light snack (30 min ago)</option>
+                    <option>Full meal (1–2 hrs ago)</option>
+                    <option>Fasted</option>
+                    <option>Supplement only</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Today's Goal</label>
+                <input class="form-input" type="text" name="goal" placeholder="e.g. New bench PR, focus on form…" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Notes</label>
+                <textarea class="form-textarea" name="notes" placeholder="Any injuries, mood notes, or focus areas…"></textarea>
+            </div>
+
+            <button type="submit" class="modal-submit-btn">Save Check-in</button>
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     POST-WORKOUT MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="post-modal-overlay">
+    <div class="modal-box">
+        <button class="modal-close" data-close-modal="post-modal-overlay" title="Close">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+        </button>
+        <div class="modal-title">Post-Workout <span style="color:var(--accent)">Review</span></div>
+        <div class="modal-sub">How did today's session go?</div>
+
+        <form id="post-workout-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Duration (min)</label>
+                    <input class="form-input" type="number" name="duration" min="5" max="240" placeholder="55" />
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Calories Burned</label>
+                    <input class="form-input" type="number" name="calories" min="50" max="2000" placeholder="400" />
+                </div>
+            </div>
+
+            <div class="range-group">
+                <div class="range-header">
+                    <label class="form-label">Session Rating</label>
+                    <span class="range-val" id="rating-val">7</span>
+                </div>
+                <input type="range" name="rating" min="1" max="10" value="7"
+                    data-val-target="rating-val" data-suffix="/10" />
+            </div>
+
+            <div class="range-group">
+                <div class="range-header">
+                    <label class="form-label">Fatigue Level</label>
+                    <span class="range-val" id="fatigue-val">5</span>
+                </div>
+                <input type="range" name="fatigue" min="1" max="10" value="5"
+                    data-val-target="fatigue-val" data-suffix="" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Completed Exercises</label>
+                <select class="form-select" name="completion">
+                    <option>All exercises completed ✓</option>
+                    <option>Skipped 1–2 exercises</option>
+                    <option>Partial session</option>
+                    <option>Just a warmup</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Post-workout Nutrition</label>
+                <select class="form-select" name="nutrition">
+                    <option>Protein shake + meal</option>
+                    <option>Protein shake only</option>
+                    <option>Full meal</option>
+                    <option>Nothing yet</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Highlights / PRs</label>
+                <input class="form-input" type="text" name="highlights" placeholder="e.g. New bench PR: 100kg!" />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Session Notes</label>
+                <textarea class="form-textarea" name="notes" placeholder="What went well? What to improve next time?"></textarea>
+            </div>
+
+            <button type="submit" class="modal-submit-btn">Log Session</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,204 @@
+{% extends "base1.html"%}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+
+<style>
+    :root {
+        --bg: #f5f4f0;
+        --accent: #d94f2b;
+        --accent2: #1a1a1a;
+        --text: #1a1a1a;
+        --muted: #888;
+        --input-bg: #f9f8f5;
+        --input-border: #e0ddd8;
+        --input-focus: rgba(217, 79, 43, 0.2);
+    }
+
+    .gym-wrapper {
+        min-height: 100vh;
+        background-color: var(--bg);
+        display: flex;
+        font-family: 'Barlow', sans-serif;
+    }
+
+    .gym-left {
+        width: 42%;
+        background: var(--accent2);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 52px 48px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .gym-left::before {
+        content: '';
+        position: absolute;
+        top: -60px;
+        right: -40px;
+        width: 160px;
+        height: 120%;
+        background: var(--accent);
+        transform: rotate(8deg);
+        opacity: 0.12;
+    }
+
+    .gym-tagline {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 72px;
+        line-height: 0.9;
+        color: #fff;
+    }
+
+    .gym-tagline span {
+        color: var(--accent);
+    }
+
+    .gym-sub {
+        margin-top: 16px;
+        font-size: 13px;
+        color: #888;
+        text-transform: uppercase;
+    }
+
+    .gym-bar {
+        width: 40px;
+        height: 3px;
+        background: var(--accent);
+        margin-bottom: 24px;
+    }
+
+    .gym-right {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 48px;
+    }
+
+    .gym-form-wrap {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .gym-form-title {
+        font-family: 'Bebas Neue', sans-serif;
+        font-size: 44px;
+        margin-bottom: 30px;
+    }
+
+    .field-group {
+        margin-bottom: 16px;
+    }
+
+    .field-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .field-input {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid var(--input-border);
+        background: var(--input-bg);
+        outline: none;
+    }
+
+    .field-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--input-focus);
+    }
+
+    .btn-submit {
+        width: 100%;
+        margin-top: 20px;
+        padding: 14px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        font-family: 'Bebas Neue', sans-serif;
+        letter-spacing: 2px;
+        cursor: pointer;
+    }
+
+    .gym-footer {
+        text-align: center;
+        margin-top: 18px;
+        font-size: 13px;
+    }
+
+    .gym-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    @media (max-width: 680px) {
+        .gym-left {
+            display: none;
+        }
+    }
+</style>
+
+<div class="gym-wrapper">
+
+    <!-- LEFT PANEL -->
+    <div class="gym-left">
+        <div class="gym-bar"></div>
+        <div class="gym-tagline">
+            The hardest part is showing up. <br><span>You’re already here.</span>
+        </div>
+        <p class="gym-sub">Consistency beats motivation.</p>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="gym-right">
+        <div class="gym-form-wrap">
+
+            <h1 class="gym-form-title">SIGN UP</h1>
+
+            <form action="{{ url_for('signup') }}" method="POST">
+
+                <div class="field-group">
+                    <label class="field-label">Full Name</label>
+                    <input type="text" name="name" class="field-input" placeholder="Your name">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Username</label>
+                    <input type="text" name="username" class="field-input" placeholder="@username">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Email</label>
+                    <input type="email" name="email" class="field-input" placeholder="you@example.com">
+                </div>
+
+                <div class="field-group">
+                    <label class="field-label">Password</label>
+                    <input type="password" name="password" class="field-input" placeholder="••••••••">
+                </div>
+
+                <button class="btn-submit">CREATE ACCOUNT</button>
+
+                <div class="gym-footer">
+                    Already have an account?
+                    <a href="{{ url_for('login') }}">Login</a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

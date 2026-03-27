@@ -1,0 +1,27 @@
+<!-- 🔝 Progress Bar -->
+<div id="progressBar"></div>
+
+<style>
+    #progressBar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 6px;
+        width: 0%;
+        background: linear-gradient(to right, #7e0707, #ff2b00);
+        z-index: 9999;
+        transition: width 0.2s ease;
+    }
+</style>
+
+
+
+<script>
+    window.addEventListener("scroll", function () {
+        let scrollTop = document.documentElement.scrollTop;
+        let scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let progress = (scrollTop / scrollHeight) * 100;
+
+        document.getElementById("progressBar").style.width = progress + "%";
+    });
+</script>
