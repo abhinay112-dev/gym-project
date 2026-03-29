@@ -1,4 +1,8 @@
-<!-- 🔝 Progress Bar -->
+{% extends "base.html" %}
+{% block title %}Gym Bhai — Arms & Shoulders{% endblock %}
+{% block sb_arms %}active{% endblock %}
+
+{% block content %}
 <div id="progressBar"></div>
 
 <style>
@@ -14,7 +18,11 @@
     }
 </style>
 
-
+<div>
+    <h1>
+        this page is about arms and shoulder
+    </h1>
+</div>
 
 <script>
     window.addEventListener("scroll", function () {
@@ -25,3 +33,5 @@
         document.getElementById("progressBar").style.width = progress + "%";
     });
 </script>
+
+{% endblock %}

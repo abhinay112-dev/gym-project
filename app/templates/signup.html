@@ -158,12 +158,16 @@
         </div>
         <p class="gym-sub">Consistency beats motivation.</p>
     </div>
-
     <!-- RIGHT PANEL -->
     <div class="gym-right">
         <div class="gym-form-wrap">
 
             <h1 class="gym-form-title">SIGN UP</h1>
+            {% if alert == True %}
+            <div class="alert alert-danger" role="alert">
+                Username is already taken, choose another username
+            </div>
+            {% endif %}
 
             <form action="{{ url_for('signup') }}" method="POST">
 

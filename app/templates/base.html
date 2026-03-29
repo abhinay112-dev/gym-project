@@ -8,9 +8,12 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap"
         rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
     {% block extra_css %}{% endblock %}
 </head>
+
+{% if current_user.is_authenticated %}
 
 <body>
 
@@ -32,27 +35,39 @@
             <span class="nav-logo">Gym<span>Bhai</span></span>
         </div>
 
+        <!-- Spacer pushes right section to the far right -->
         <div class="nav-spacer"></div>
 
-        <!-- Streak badge -->
-        <div class="nav-streak" title="Current Streak">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-            </svg>
-            <span id="streak-count">7</span>
-            <span class="streak-label">day streak</span>
-        </div>
-
+        <!-- Nav right: streak + username link + avatar dropdown -->
         <div class="nav-right">
-            <a href="{{ url_for('login') }}" class="nav-username">Alex Carter</a>
+            <!-- Streak badge — count pulled from JS (data-attribute hook) -->
+            <div class="nav-streak" title="Current Streak">
+
+                <span id="streak-count"
+                    data-streak="{{ current_user.personal.streak if current_user.personal and current_user.personal.streak is defined else 0 }}">0</span>
+                <span class="streak-label">day streak</span>
+            </div>
+
+            <a href="{{ url_for('profile') }}" class="nav-username">{{ current_user.name }}</a>
+
             <div class="avatar-wrapper" id="avatarWrapper">
-                <div class="nav-avatar" id="avatarBtn" title="View Profile">AC</div>
+                <div class="nav-avatar" id="avatarBtn" title="View Profile">
+                    {{ current_user.name[0] | upper }}
+                </div>
+
+                <!-- Dropdown — positioned via CSS relative to .avatar-wrapper -->
                 <div class="dropdown" id="dropdown">
                     <div class="dropdown-header">
-                        <div class="dh-name">Alex Carter</div>
-                        <div class="dh-email">alex.carter@gymbhai.com</div>
+                        <div class="dh-name">{{ current_user.name }}</div>
+                        <div class="dh-email">{{ current_user.email }}</div>
+                        {% if current_user.personal %}
+                        <div class="dh-meta">
+                            {{ current_user.personal.level | capitalize }} ·
+                            {{ current_user.personal.gender | capitalize }}
+                        </div>
+                        {% endif %}
                     </div>
-                    <a href="{{ url_for('login') }}">
+                    <a href="{{ url_for('profile') }}">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <circle cx="12" cy="8" r="4" />
@@ -60,16 +75,7 @@
                         </svg>
                         Profile
                     </a>
-                    <a href="{{ url_for('login') }}">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <circle cx="12" cy="12" r="3" />
-                            <path
-                                d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
-                        </svg>
-                        Settings
-                    </a>
-                    <a href="{{ url_for('login') }}" class="logout">
+                    <a href="{{ url_for('logout') }}" class="logout">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
@@ -85,9 +91,8 @@
 
     <!-- ── SIDEBAR ── -->
     <aside id="sidebar">
-        <a href="{{ url_for('login') }}" class="sb-item {% block sb_profile %}{% endblock %}">
+        <a href="{{ url_for('profile') }}" class="sb-item {% block sb_profile %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Person icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <circle cx="12" cy="8" r="4" />
                     <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
@@ -95,9 +100,8 @@
             </span>
             <span class="sb-label">Profile</span>
         </a>
-        <a href="{{ url_for('arms') }}" class="sb-item {% block sb_arms %}{% endblock %}">
+        <a href="{{ url_for('arms_shoulder') }}" class="sb-item {% block sb_arms %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Dumbbell icon -->
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <rect x="2" y="10" width="3" height="4" rx="1" />
                     <rect x="19" y="10" width="3" height="4" rx="1" />
@@ -108,9 +112,8 @@
             </span>
             <span class="sb-label">Arms &amp; Shoulder</span>
         </a>
-        <a href="{{ url_for('legs') }}" class="sb-item {% block sb_legs %}{% endblock %}">
+        <a href="{{ url_for('legs_glutes') }}" class="sb-item {% block sb_legs %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Leg/squat icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <circle cx="12" cy="4" r="2" />
                     <path d="M12 6v5l-3 5h6" />
@@ -118,11 +121,10 @@
                     <path d="M15 16l2 5" />
                 </svg>
             </span>
-            <span class="sb-label">Legs</span>
+            <span class="sb-label">Legs &amp; Glutes</span>
         </a>
-        <a href="{{ url_for('arms') }}" class="sb-item {% block sb_abs %}{% endblock %}">
+        <a href="{{ url_for('abs_core') }}" class="sb-item {% block sb_abs %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Core/grid icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <rect x="4" y="4" width="6" height="7" rx="1" />
                     <rect x="14" y="4" width="6" height="7" rx="1" />
@@ -130,23 +132,19 @@
                     <rect x="14" y="14" width="6" height="6" rx="1" />
                 </svg>
             </span>
-            <span class="sb-label">Abs</span>
+            <span class="sb-label">Abs &amp; Core</span>
         </a>
-        <a href="{{ url_for('cardio') }}" class="sb-item {% block sb_cardio %}{% endblock %}">
+        <a href="{{ url_for('cardio_hit') }}" class="sb-item {% block sb_cardio %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Heartbeat/pulse icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <polyline points="3 12 6 12 9 5 12 19 15 9 18 12 21 12" />
                 </svg>
             </span>
-            <span class="sb-label">Cardio</span>
+            <span class="sb-label">Cardio and HIT</span>
         </a>
-        <a href="{{ url_for('login') }}" class="sb-item {% block sb_progress %}{% endblock %}">
+        <a href="{{ url_for('progress') }}" class="sb-item {% block sb_progress %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Progress / bar-chart icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <line x1="4" y1="20" x2="4" y2="14" />
-                    <line x1="4" y1="14" x2="4" y2="14" stroke-linecap="round" />
                     <rect x="3" y="14" width="3" height="6" rx="1" />
                     <rect x="9" y="9" width="3" height="11" rx="1" />
                     <rect x="15" y="4" width="3" height="16" rx="1" />
@@ -155,9 +153,8 @@
             </span>
             <span class="sb-label">Progress</span>
         </a>
-        <a href="{{ url_for('login') }}" class="sb-item {% block sb_nutrition %}{% endblock %}">
+        <a href="{{ url_for('nutrition') }}" class="sb-item {% block sb_nutrition %}{% endblock %}">
             <span class="sb-icon">
-                <!-- Nutrition / leaf-plate icon -->
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                     <path d="M12 2C8 2 4 6 4 10c0 3.5 2.5 6.5 6 7.7V21h4v-3.3c3.5-1.2 6-4.2 6-7.7 0-4-4-8-8-8z" />
                     <line x1="12" y1="10" x2="12" y2="21" />
@@ -179,7 +176,6 @@
     {% if show_chatbot %}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}" />
     <script src="{{ url_for('static', filename='js/chatbot.js') }}" defer></script>
-    <!-- Chatbot Button -->
     <button id="chatbot-btn" title="Ask AI Assistant">
         <svg class="icon-chat" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"
             viewBox="0 0 24 24">
@@ -191,7 +187,6 @@
             <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
     </button>
-    <!-- Chatbot Panel -->
     <div id="chatbot-panel">
         <div class="chat-header">
             <div class="chat-header-icon">
@@ -206,7 +201,6 @@
                 <div class="chat-header-title">GymBhai AI</div>
                 <div class="chat-header-sub">Page-aware assistant</div>
             </div>
-            <div class="chat-online-dot"></div>
         </div>
         <div id="chat-messages"></div>
         <div class="chat-input-area">
@@ -222,6 +216,37 @@
     {% endif %}
 
     {% block extra_js %}{% endblock %}
+
+    <script>
+        // Populate streak from data attribute (avoids hardcoding)
+        const streakEl = document.getElementById('streak-count');
+        if (streakEl) {
+            const val = parseInt(streakEl.dataset.streak, 10);
+            streakEl.textContent = isNaN(val) ? 0 : val;
+        }
+    </script>
+
 </body>
+
+{% else %}
+
+<body>
+    <div
+        style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Barlow',sans-serif;background:#1a1a1a;color:#fff;gap:16px;">
+        <div style="font-size:64px;font-weight:800;color:#d94f2b;">401</div>
+        <div style="font-size:20px;font-weight:600;">Unauthorized Access</div>
+        <div style="font-size:14px;color:#888;margin-bottom:8px;">You must be logged in to view this page.</div>
+        <div style="display:flex;gap:12px;">
+            <a href="{{ url_for('login') }}"
+                style="padding:10px 24px;background:#d94f2b;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Log
+                In</a>
+            <a href="{{ url_for('signup') }}"
+                style="padding:10px 24px;background:rgba(255,255,255,0.08);color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Sign
+                Up</a>
+        </div>
+    </div>
+</body>
+
+{% endif %}
 
 </html>
