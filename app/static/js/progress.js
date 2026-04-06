@@ -1,121 +1,57 @@
-/* ═══════════════════════════════════════════
-   GYMBHAI — progress.js
-   No animations, no glow, simple alerts
-   ═══════════════════════════════════════════ */
 
 (function () {
 
-    /* ── Consistency Score Ring ─────────────── */
-    const scoreRingFill = document.querySelector('.score-ring-fill');
-    const scoreNum = document.querySelector('.score-num');
-    const initialScore = parseInt(scoreNum ? scoreNum.dataset.score || scoreNum.textContent : 0);
-
-    if (scoreRingFill) {
-        const pct = initialScore / 100;
-        const offset = 220 - (220 * pct);
-        scoreRingFill.style.strokeDashoffset = offset;
-    }
-
-    if (scoreNum) {
-        scoreNum.textContent = initialScore;
-    }
-
-    /* ── cbar-fill widths ── */
-    document.querySelectorAll('.cbar-fill[data-pct]').forEach(bar => {
-        bar.style.width = bar.dataset.pct + '%';
+    document.querySelectorAll('.score-big[data-score]').forEach(el => {
+        el.textContent = el.dataset.score || 0;
     });
 
-    /* ── Mood fill bars ─────────────────────── */
-    document.querySelectorAll('.mood-fill[data-pct]').forEach(bar => {
-        bar.style.width = bar.dataset.pct + '%';
-    });
+    const calGrid = document.getElementById('calGrid');
+    const calMonth = document.getElementById('calMonth');
+    if (!calGrid || !calMonth) return;
 
-    /* ── Workout type fill bars ─────────────── */
-    document.querySelectorAll('.wtype-bar-fill[data-pct]').forEach(bar => {
-        bar.style.width = bar.dataset.pct + '%';
-    });
+    let logs = {};
+    try { logs = JSON.parse(calGrid.dataset.logs || '{}'); } catch (e) { }
 
-    /* ── Delete / Reset buttons → simple alert ── */
-    document.querySelectorAll('[data-confirm]').forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            const msg = this.dataset.confirm || 'Are you sure?';
-            alert(msg + '\n\nThis action cannot be undone.');
-        });
-    });
+    const today = new Date();
+    let viewYear = today.getFullYear();
+    let viewMonth = today.getMonth();
 
-    document.querySelectorAll('.btn-delete, .btn-reset').forEach(btn => {
-        btn.addEventListener('click', function (e) {
-            const action = this.classList.contains('btn-reset') ? 'reset' : 'delete';
-            alert('Confirm: You are about to ' + action + ' this data. Click OK to proceed.');
-        });
-    });
-
-})();
-/* ── Monthly Calendar ───────────────────── */
-(function () {
-    const grid = document.getElementById("calGrid");
-    const monthLabel = document.getElementById("calMonth");
-    const prev = document.getElementById("calPrev");
-    const next = document.getElementById("calNext");
-
-    if (!grid) return;
-
-    const logs = JSON.parse(grid.dataset.logs || "{}");
-
-    let current = new Date();
-
-    function render(date) {
-        grid.innerHTML = "";
-
-        const year = date.getFullYear();
-        const month = date.getMonth();
-
+    function buildCalendar(year, month) {
         const firstDay = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const monthName = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+        calMonth.textContent = monthName;
+        calGrid.innerHTML = '';
 
-        monthLabel.textContent = date.toLocaleString("default", {
-            month: "long",
-            year: "numeric"
-        });
-
-        const todayStr = new Date().toISOString().slice(0, 10);
-
-        // previous month filler
         for (let i = 0; i < firstDay; i++) {
-            const empty = document.createElement("div");
-            empty.className = "cal-day other-month";
-            grid.appendChild(empty);
+            const d = document.createElement('div');
+            d.className = 'cal-day other-month';
+            calGrid.appendChild(d);
         }
 
-        for (let d = 1; d <= daysInMonth; d++) {
-            const el = document.createElement("div");
-            el.className = "cal-day";
-            el.textContent = d;
-
-            const fullDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-
-            // apply status from backend
-            if (logs[fullDate]) {
-                el.classList.add(logs[fullDate]); // active / partial / missed
-            }
-
-            if (fullDate === todayStr) {
-                el.classList.add("today");
-            }
-
-            grid.appendChild(el);
+        for (let day = 1; day <= daysInMonth; day++) {
+            const d = document.createElement('div');
+            d.className = 'cal-day';
+            d.textContent = day;
+            const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+            const status = logs[key];
+            if (status) d.classList.add(status);
+            if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) d.classList.add('today');
+            calGrid.appendChild(d);
         }
     }
 
-    prev.onclick = () => {
-        current.setMonth(current.getMonth() - 1);
-        render(current);
-    };
+    buildCalendar(viewYear, viewMonth);
 
-    next.onclick = () => {
-        current.setMonth(current.getMonth() + 1);
-        render(current);
-    };
+    document.getElementById('calPrev')?.addEventListener('click', () => {
+        viewMonth--;
+        if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+        buildCalendar(viewYear, viewMonth);
+    });
+    document.getElementById('calNext')?.addEventListener('click', () => {
+        viewMonth++;
+        if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+        buildCalendar(viewYear, viewMonth);
+    });
 
-    render(current);
 })();

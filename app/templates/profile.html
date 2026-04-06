@@ -1,1190 +1,146 @@
 {% extends "base.html" %}
-{% block title %}Gym Bhai — Profile{% endblock %}
+{% block title %}Gym Tracker — Profile{% endblock %}
 {% block sb_profile %}active{% endblock %}
 {% block extra_css %}
-<link
-    href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
-    rel="stylesheet" />
+<link rel="stylesheet" href="/css/profile.css" />
 {% endblock %}
 
 {% block content %}
-<style>
-    /* ── PAGE HEADER ── */
-    .page-header {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        margin-bottom: 32px;
-    }
-
-    .page-eyebrow {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        color: #666;
-        margin-bottom: 6px;
-    }
-
-    .profile-page-title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 48px;
-        letter-spacing: 2px;
-        color: var(--black);
-        line-height: 1;
-    }
-
-    .page-sub {
-        font-size: 13px;
-        color: #888;
-        margin-top: 6px;
-    }
-
-    .header-actions {
-        display: flex;
-        gap: 10px;
-    }
-
-    /* ── BUTTONS ── */
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--accent);
-        color: #fff;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        padding: 11px 22px;
-        border-radius: 6px;
-        border: none;
-        cursor: pointer;
-        transition: background var(--transition);
-        font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-primary:hover {
-        background: var(--accent-dim);
-    }
-
-    .btn-ghost {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: #2a2a2a;
-        color: #aaa;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        padding: 11px 22px;
-        border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
-    }
-
-    .btn-ghost:hover {
-        border-color: rgba(255, 255, 255, 0.25);
-        color: #fff;
-        background: #333;
-    }
-
-    .btn-danger {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: #2a2a2a;
-        color: #ccc;
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        padding: 11px 22px;
-        border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        cursor: pointer;
-        font-family: 'DM Sans', sans-serif;
-        white-space: nowrap;
-    }
-
-    .btn-danger:hover {
-        background: #333;
-        border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    /* ── PROFILE HERO ── */
-    .profile-hero {
-        background: #141414;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 16px;
-        padding: 36px 40px;
-        margin-bottom: 28px;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        gap: 36px;
-    }
-
-    .profile-hero-bg {
-        position: absolute;
-        right: -20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 160px;
-        letter-spacing: -5px;
-        color: rgba(255, 255, 255, 0.025);
-        pointer-events: none;
-        line-height: 1;
-        user-select: none;
-    }
-
-    .avatar-upload {
-        position: relative;
-        flex-shrink: 0;
-        z-index: 1;
-    }
-
-    .avatar-circle {
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, var(--accent), #f07a4a);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 38px;
-        letter-spacing: 2px;
-        color: #fff;
-        border: 3px solid rgba(217, 79, 43, 0.4);
-        position: relative;
-    }
-
-    .profile-hero-info {
-        flex: 1;
-        z-index: 1;
-    }
-
-    .profile-name-display {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 36px;
-        letter-spacing: 2px;
-        color: #fff;
-        line-height: 1;
-        margin-bottom: 8px;
-    }
-
-    .profile-meta-tags {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-        margin-bottom: 14px;
-    }
-
-    .meta-tag {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: #1c1c1c;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 20px;
-        padding: 4px 12px;
-        font-size: 12px;
-        color: #888;
-    }
-
-    .meta-tag.accent {
-        background: #1c1c1c;
-        border-color: rgba(255, 255, 255, 0.1);
-        color: #aaa;
-    }
-
-    .meta-tag.green {
-        background: #1c1c1c;
-        border-color: rgba(255, 255, 255, 0.1);
-        color: #aaa;
-    }
-
-    .meta-tag.plain {
-        background: #1c1c1c;
-        border-color: rgba(255, 255, 255, 0.07);
-        color: #888;
-    }
-
-    .profile-joined {
-        font-size: 12px;
-        color: #555;
-    }
-
-    .hero-stats {
-        display: flex;
-        gap: 20px;
-        margin-top: 16px;
-        padding-top: 16px;
-        border-top: 1px solid rgba(255, 255, 255, 0.07);
-        flex-wrap: wrap;
-    }
-
-    .hero-stat {
-        text-align: center;
-    }
-
-    .hero-stat-val {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 26px;
-        color: #fff;
-        line-height: 1;
-    }
-
-    .hero-stat-val em {
-        color: #fff;
-        font-style: normal;
-    }
-
-    .hero-stat-lbl {
-        font-size: 10px;
-        color: #555;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        margin-top: 2px;
-    }
-
-    .hero-stat-sep {
-        width: 1px;
-        background: rgba(255, 255, 255, 0.07);
-        align-self: stretch;
-    }
-
-    /* ── PROFILE GRID ── */
-    .profile-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 24px;
-        margin-bottom: 24px;
-    }
-
-    /* ── CARDS ── */
-    .p-card {
-        background: #141414;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 14px;
-        overflow: hidden;
-    }
-
-    .p-card:focus-within {
-        border-color: rgba(255, 255, 255, 0.12);
-    }
-
-    .p-card-head {
-        padding: 20px 24px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .p-card-head-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .p-card-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .icon-orange {
-        background: rgba(255, 255, 255, 0.07);
-        color: #aaa;
-    }
-
-    .icon-blue {
-        background: rgba(255, 255, 255, 0.07);
-        color: #aaa;
-    }
-
-    .icon-green {
-        background: rgba(255, 255, 255, 0.07);
-        color: #aaa;
-    }
-
-    .icon-gold {
-        background: rgba(255, 255, 255, 0.07);
-        color: #aaa;
-    }
-
-    .icon-red {
-        background: rgba(255, 255, 255, 0.07);
-        color: #aaa;
-    }
-
-    .p-card-title {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 17px;
-        letter-spacing: 1.5px;
-        color: #fff;
-    }
-
-    .p-card-subtitle {
-        font-size: 11px;
-        color: #888;
-        margin-top: 1px;
-    }
-
-    .p-card-body {
-        padding: 20px 24px;
-    }
-
-    /* ── FORM ELEMENTS ── */
-    .form-stack {
-        display: flex;
-        flex-direction: column;
-        gap: 14px;
-    }
-
-    .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-    }
-
-    label.field-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #888;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-
-    label.field-label .req {
-        color: #888;
-        font-size: 12px;
-        line-height: 1;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="email"],
-    input[type="date"],
-    textarea,
-    select {
-        background: #1c1c1c;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 8px;
-        color: #f0ede8;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 14px;
-        padding: 11px 14px;
-        width: 100%;
-        outline: none;
-        appearance: none;
-        -webkit-appearance: none;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-        border-color: rgba(255, 255, 255, 0.25);
-        background: #1c1c1c;
-        box-shadow: none;
-    }
-
-    input:hover:not(:focus),
-    textarea:hover:not(:focus),
-    select:hover:not(:focus) {
-        border-color: rgba(255, 255, 255, 0.15);
-    }
-
-    textarea {
-        resize: vertical;
-        min-height: 90px;
-        line-height: 1.6;
-    }
-
-    .input-unit-wrap {
-        position: relative;
-    }
-
-    .input-unit-wrap input {
-        padding-right: 50px;
-    }
-
-    .input-unit {
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-family: 'DM Mono', monospace;
-        font-size: 12px;
-        color: #555;
-        pointer-events: none;
-    }
-
-    .select-wrap {
-        position: relative;
-    }
-
-    .select-wrap::after {
-        content: '';
-        position: absolute;
-        right: 14px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 0;
-        height: 0;
-        border-left: 4px solid transparent;
-        border-right: 4px solid transparent;
-        border-top: 5px solid #555;
-        pointer-events: none;
-    }
-
-    select option {
-        background: #1c1c1c;
-        color: #f0ede8;
-    }
-
-    /* ── RANGE ── */
-    .range-wrap {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .range-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .range-val {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 20px;
-        color: #fff;
-        letter-spacing: 1px;
-    }
-
-    input[type="range"] {
-        width: 100%;
-        height: 4px;
-        border-radius: 2px;
-        cursor: pointer;
-        background: #242424;
-        outline: none;
-        border: none;
-        padding: 0;
-        appearance: none;
-        -webkit-appearance: none;
-        box-shadow: none;
-    }
-
-    input[type="range"]::-webkit-slider-thumb {
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        background: var(--accent);
-        cursor: pointer;
-        border: 2px solid #0d0d0d;
-    }
-
-    input[type="range"]:focus {
-        box-shadow: none;
-    }
-
-    .range-labels {
-        display: flex;
-        justify-content: space-between;
-        font-size: 10px;
-        color: #555;
-    }
-
-    /* ── TOGGLE ── */
-    .toggle-group {
-        display: flex;
-        background: #1c1c1c;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .toggle-btn {
-        flex: 1;
-        padding: 11px 0;
-        font-size: 13px;
-        font-weight: 600;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #888;
-        font-family: 'DM Sans', sans-serif;
-    }
-
-    .toggle-btn.active-yes {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-    }
-
-    .toggle-btn.active-no {
-        background: rgba(255, 255, 255, 0.06);
-        color: #ccc;
-    }
-
-    .toggle-btn:not(.active-yes):not(.active-no):hover {
-        background: rgba(255, 255, 255, 0.04);
-        color: #fff;
-    }
-
-    /* ── LEVEL CARDS ── */
-    .level-cards {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 10px;
-        margin-top: 4px;
-    }
-
-    .level-card {
-        border: 1.5px solid rgba(255, 255, 255, 0.07);
-        border-radius: 10px;
-        padding: 14px 12px;
-        cursor: pointer;
-        text-align: center;
-        position: relative;
-    }
-
-    .level-card:hover {
-        border-color: rgba(255, 255, 255, 0.2);
-        background: rgba(255, 255, 255, 0.03);
-    }
-
-    .level-card.sel-beginner,
-    .level-card.sel-intermediate,
-    .level-card.sel-advanced {
-        border-color: rgba(255, 255, 255, 0.4);
-        background: rgba(255, 255, 255, 0.05);
-    }
-
-    .level-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 6px;
-        margin: 0 auto 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.07);
-        color: #aaa;
-    }
-
-    .level-icon svg {
-        width: 18px;
-        height: 18px;
-    }
-
-    .level-card.sel-beginner .level-icon,
-    .level-card.sel-intermediate .level-icon,
-    .level-card.sel-advanced .level-icon {
-        background: rgba(255, 255, 255, 0.12);
-        color: #fff;
-    }
-
-    .level-card:not([class*="sel"]) .level-icon {
-        background: rgba(255, 255, 255, 0.05);
-        color: #666;
-    }
-
-    .level-name {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 14px;
-        letter-spacing: 1px;
-        color: #fff;
-    }
-
-    .level-desc {
-        font-size: 10px;
-        color: #555;
-        margin-top: 3px;
-        line-height: 1.4;
-    }
-
-    .level-card.sel-beginner .level-name,
-    .level-card.sel-intermediate .level-name,
-    .level-card.sel-advanced .level-name {
-        color: #fff;
-    }
-
-    .level-check {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        background: none;
-        border: 1.5px solid rgba(255, 255, 255, 0.1);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 9px;
-        color: transparent;
-        transition: background var(--transition), border-color var(--transition), color var(--transition);
-    }
-
-    .level-card.sel-beginner .level-check,
-    .level-card.sel-intermediate .level-check,
-    .level-card.sel-advanced .level-check {
-        background: #fff;
-        border-color: #fff;
-        color: #000;
-    }
-
-    /* ── GOAL OPTIONS ── */
-    .goal-options {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 4px;
-    }
-
-    .goal-option {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 12px 16px;
-        border-radius: 10px;
-        border: 1.5px solid rgba(255, 255, 255, 0.07);
-        cursor: pointer;
-    }
-
-    .goal-option:hover {
-        border-color: rgba(255, 255, 255, 0.2);
-        background: rgba(255, 255, 255, 0.02);
-    }
-
-    .goal-option.selected {
-        border-color: rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.04);
-    }
-
-    .goal-radio {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: 1.5px solid rgba(255, 255, 255, 0.15);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-    }
-
-    .goal-option.selected .goal-radio {
-        border-color: #fff;
-        background: #fff;
-    }
-
-    .goal-radio-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #000;
-        opacity: 0;
-    }
-
-    .goal-option.selected .goal-radio-dot {
-        opacity: 1;
-    }
-
-    .goal-icon {
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.05);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        flex-shrink: 0;
-    }
-
-    .goal-option.selected .goal-icon {
-        background: rgba(255, 255, 255, 0.1);
-        color: #fff;
-    }
-
-    .goal-icon svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    .goal-info {
-        flex: 1;
-    }
-
-    .goal-name {
-        font-size: 14px;
-        font-weight: 500;
-        color: #fff;
-    }
-
-    .goal-sub {
-        font-size: 11px;
-        color: #555;
-        margin-top: 1px;
-    }
-
-    /* ── HEALTH METRICS ── */
-    .health-metrics {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 12px;
-    }
-
-    .health-metric {
-        background: #1c1c1c;
-        border-radius: 10px;
-        padding: 14px 16px;
-    }
-
-    .hm-label {
-        font-size: 10px;
-        font-weight: 600;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #555;
-        margin-bottom: 8px;
-    }
-
-    .hm-val {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 28px;
-        color: #fff;
-        line-height: 1;
-    }
-
-    .hm-val em {
-        color: #fff;
-        font-style: normal;
-    }
-
-    .hm-unit {
-        font-size: 13px;
-        color: #555;
-        margin-left: 2px;
-    }
-
-    .hm-sub {
-        font-size: 11px;
-        color: #555;
-        margin-top: 4px;
-    }
-
-    /* ── DANGER ZONE ── */
-    .danger-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .danger-item {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px;
-        background: #1a1a1a;
-        border: 1px solid rgba(255, 255, 255, 0.07);
-        border-radius: 10px;
-        gap: 16px;
-    }
-
-    .danger-title {
-        font-size: 14px;
-        font-weight: 500;
-        color: #fff;
-    }
-
-    .danger-desc {
-        font-size: 12px;
-        color: #555;
-        margin-top: 3px;
-    }
-
-    /* ── SAVE BAR ── */
-    .save-bar {
-        position: sticky;
-        bottom: 0;
-        background: #141414;
-        border-top: 1px solid rgba(255, 255, 255, 0.07);
-        padding: 16px 40px 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: 32px -36px -32px;
-        z-index: 50;
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .save-bar.visible {
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .save-bar-info {
-        font-size: 12px;
-        color: #555;
-    }
-
-    .save-bar-actions {
-        display: flex;
-        gap: 10px;
-    }
-
-    /* ── TOAST ── */
-    .toast {
-        position: fixed;
-        bottom: 90px;
-        right: 32px;
-        z-index: 999;
-        background: #1a1a1a;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        padding: 14px 20px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 14px;
-        color: #fff;
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .toast.show {
-        opacity: 1;
-    }
-
-    .toast.error {
-        border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    /* ── CONFIRM MODAL ── */
-    .confirm-modal-bg {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 200;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .confirm-modal-bg.open {
-        display: flex;
-    }
-
-    .confirm-modal {
-        background: #1a1a1a;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 14px;
-        padding: 32px 36px;
-        max-width: 420px;
-        width: 90%;
-        text-align: center;
-    }
-
-    .confirm-modal h3 {
-        font-family: 'Bebas Neue', sans-serif;
-        font-size: 24px;
-        letter-spacing: 1.5px;
-        color: #fff;
-        margin-bottom: 10px;
-    }
-
-    .confirm-modal p {
-        font-size: 13px;
-        color: #888;
-        margin-bottom: 24px;
-        line-height: 1.6;
-    }
-
-    .confirm-modal-actions {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-    }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    ::-webkit-scrollbar-track {
-        background: #0d0d0d;
-    }
-
-    ::-webkit-scrollbar-thumb {
-        background: #242424;
-        border-radius: 3px;
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 1100px) {
-        .profile-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .form-row {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .save-bar {
-            margin: 24px -20px -20px;
-            padding: 16px 20px 20px;
-        }
-
-        .profile-hero {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 24px;
-        }
-    }
-</style>
-
-{# ── Jinja helpers: safe value rendering ── #}
 {% set p = current_user.personal %}
 
-<!-- PAGE HEADER -->
 <div class="page-header">
-    <div>
-        <div class="page-eyebrow">Account</div>
-        <div class="profile-page-title">MY PROFILE</div>
-        <div class="page-sub">Manage your personal info, fitness data, and preferences</div>
-    </div>
+    <h1>My Profile</h1>
+    <p>Manage your personal info and fitness data</p>
 </div>
 
-<!-- PROFILE HERO -->
+
 <div class="profile-hero">
-    <div class="profile-hero-bg" id="heroBgText">{{ current_user.name[0]|upper if current_user.name else '' }}</div>
-    <div class="avatar-upload">
-        <div class="avatar-circle">
-            <span id="profileAvatarInitials">{{ current_user.name[0]|upper if current_user.name else '?' }}</span>
-        </div>
-    </div>
-    <div class="profile-hero-info">
-        <div class="profile-name-display" id="heroName">{{ current_user.name }}</div>
-        <div class="profile-meta-tags">
+    <div class="avatar-circle" id="profileAvatar">{{ current_user.name[0]|upper if current_user.name else '?' }}</div>
+    <div class="profile-info">
+        <div class="profile-name" id="heroName">{{ current_user.name }}</div>
+        <div class="profile-tags">
             {% if p and p.age %}
-            <span class="meta-tag plain" id="heroAge">{{ p.age }} yrs</span>
+            <span class="tag" id="heroAge">{{ p.age }} yrs</span>
             {% else %}
-            <span class="meta-tag plain" id="heroAge" style="display:none"></span>
+            <span class="tag" id="heroAge" style="display:none"></span>
             {% endif %}
-            {% if p and p.level %}
-            <span class="meta-tag accent">{{ p.level | capitalize }}</span>
-            {% endif %}
-            {% if p and p.going_to_gym %}
-            <span class="meta-tag green">{{ 'At Gym' if p.going_to_gym == 'yes' else 'Home Training' }}</span>
-            {% endif %}
+            {% if p and p.level %}<span class="tag accent">{{ p.level|capitalize }}</span>{% endif %}
+            {% if p and p.going_to_gym %}<span class="tag">{{ 'At Gym' if p.going_to_gym == 'yes' else 'Home Training'
+                }}</span>{% endif %}
         </div>
-        <div class="profile-joined">@{{ current_user.username }}</div>
-        <div class="hero-stats">
+        <div class="profile-username">@{{ current_user.username }}</div>
+        <div class="profile-stats">
             {% if p and p.weight %}
-            <div class="hero-stat">
-                <div class="hero-stat-val"><em id="heroWeight">{{ p.weight }}</em></div>
-                <div class="hero-stat-lbl">kg weight</div>
-            </div>
-            <div class="hero-stat-sep"></div>
-            {% else %}
-            <div class="hero-stat" style="display:none">
-                <div class="hero-stat-val"><em id="heroWeight"></em></div>
-                <div class="hero-stat-lbl">kg weight</div>
-            </div>
+            <div class="pstat"><strong id="heroWeight">{{ p.weight }}</strong><span>kg</span></div>
             {% endif %}
-
             {% if p and p.height %}
-            <div class="hero-stat">
-                <div class="hero-stat-val"><em id="heroHeight">{{ p.height }}</em></div>
-                <div class="hero-stat-lbl">cm height</div>
-            </div>
-            <div class="hero-stat-sep"></div>
-            {% else %}
-            <div class="hero-stat" style="display:none">
-                <div class="hero-stat-val"><em id="heroHeight"></em></div>
-                <div class="hero-stat-lbl">cm height</div>
-            </div>
+            <div class="pstat"><strong id="heroHeight">{{ p.height }}</strong><span>cm</span></div>
             {% endif %}
-
             {% if p and p.goal_weight %}
-            <div class="hero-stat">
-                <div class="hero-stat-val"><em id="heroGoalW">{{ p.goal_weight }}</em></div>
-                <div class="hero-stat-lbl">kg goal</div>
-            </div>
-            <div class="hero-stat-sep"></div>
-            {% else %}
-            <div class="hero-stat" style="display:none">
-                <div class="hero-stat-val"><em id="heroGoalW"></em></div>
-                <div class="hero-stat-lbl">kg goal</div>
-            </div>
+            <div class="pstat"><strong id="heroGoalW">{{ p.goal_weight }}</strong><span>kg goal</span></div>
             {% endif %}
-
             {% if p and p.weight and p.height %}
-            <div class="hero-stat">
-                <div class="hero-stat-val"><em id="heroBMI">—</em></div>
-                <div class="hero-stat-lbl">BMI</div>
-            </div>
-            {% else %}
-            <div class="hero-stat" id="heroBMIStat" style="display:none">
-                <div class="hero-stat-val"><em id="heroBMI">—</em></div>
-                <div class="hero-stat-lbl">BMI</div>
-            </div>
+            <div class="pstat"><strong id="heroBMI">—</strong><span>BMI</span></div>
             {% endif %}
         </div>
     </div>
 </div>
 
-<!-- ROW 1: Personal Info + Body Stats -->
+
 <div class="profile-grid">
 
-    <div class="p-card">
-        <div class="p-card-head">
-            <div class="p-card-head-left">
-                <div class="p-card-icon icon-orange">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="8" r="4" />
-                        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                    </svg>
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Personal Info</div>
+            <div class="card-sub">Name, age, contact</div>
+        </div>
+        <div class="card-body">
+            <div class="form-group">
+                <label class="field-label">Name *</label>
+                <input type="text" id="firstName" value="{{ current_user.name or '' }}" oninput="liveUpdate()" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="field-label">Age *</label>
+                    <div class="input-unit-wrap">
+                        <input type="number" id="age" value="{{ p.age if p and p.age is not none else '' }}" min="10"
+                            max="100" oninput="liveUpdate()" placeholder="—" />
+                        <span class="input-unit">yrs</span>
+                    </div>
                 </div>
-                <div>
-                    <div class="p-card-title">Personal Info</div>
-                    <div class="p-card-subtitle">Name, age, contact details</div>
+                <div class="form-group">
+                    <label class="field-label">Gender</label>
+                    <div class="select-wrap">
+                        <select id="gender" onchange="calcMetrics()">
+                            <option value="male" {% if p and p.gender=='male' %}selected{% endif %}>Male</option>
+                            <option value="female" {% if p and p.gender=='female' %}selected{% endif %}>Female</option>
+                            <option value="other" {% if p and p.gender=='other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="p-card-body">
-            <div class="form-stack">
-                <div class="form-group">
-                    <label class="field-label">Name <span class="req">*</span></label>
-                    <input type="text" id="firstName" value="{{ current_user.name or '' }}" oninput="liveUpdate()">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="field-label">Age <span class="req">*</span></label>
-                        <div class="input-unit-wrap">
-                            <input type="number" id="age" value="{{ p.age if p and p.age is not none else '' }}"
-                                min="10" max="100" oninput="liveUpdate()" placeholder="—">
-                            <span class="input-unit">yrs</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="field-label">Gender</label>
-                        <div class="select-wrap">
-                            <select id="gender" onchange="calcHealthMetrics();markUnsaved();">
-                                <option value="male" {% if p and p.gender=='male' %}selected{% endif %}>Male</option>
-                                <option value="female" {% if p and p.gender=='female' %}selected{% endif %}>Female
-                                </option>
-                                <option value="other" {% if p and p.gender=='other' %}selected{% endif %}>Prefer not to
-                                    say</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="field-label">Email Address</label>
-                    <input type="email" id="email" value="{{ current_user.email or '' }}">
-                </div>
-                <div class="form-group">
-                    <label class="field-label">Phone Number</label>
-                    <input type="text" id="phone" value="{{ p.phone if p and p.phone else '' }}" placeholder="—">
-                </div>
-                <div class="form-group">
-                    <label class="field-label">Date of Birth</label>
-                    <input type="date" id="dob" value="{{ p.dob if p and p.dob else '' }}">
-                </div>
+            <div class="form-group">
+                <label class="field-label">Email</label>
+                <input type="email" id="email" value="{{ current_user.email or '' }}" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Phone</label>
+                <input type="text" id="phone" value="{{ p.phone if p and p.phone else '' }}" placeholder="—" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Date of Birth</label>
+                <input type="date" id="dob" value="{{ p.dob if p and p.dob else '' }}" />
             </div>
         </div>
     </div>
 
-    <div class="p-card">
-        <div class="p-card-head">
-            <div class="p-card-head-left">
-                <div>
-                    <div class="p-card-title">Body Stats</div>
-                    <div class="p-card-subtitle">Weight, height, targets</div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Body Stats</div>
+            <div class="card-sub">Weight, height, targets</div>
         </div>
-        <div class="p-card-body">
-            <div class="form-stack">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="field-label">Current Weight <span class="req">*</span></label>
-                        <div class="input-unit-wrap">
-                            <input type="number" id="weight"
-                                value="{{ p.weight if p and p.weight is not none else '' }}" min="30" max="300"
-                                oninput="liveUpdate()" placeholder="—">
-                            <span class="input-unit">kg</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="field-label">Goal Weight <span class="req">*</span></label>
-                        <div class="input-unit-wrap">
-                            <input type="number" id="goalWeight"
-                                value="{{ p.goal_weight if p and p.goal_weight is not none else '' }}" min="30"
-                                max="300" oninput="liveUpdate()" placeholder="—">
-                            <span class="input-unit">kg</span>
-                        </div>
+        <div class="card-body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="field-label">Weight *</label>
+                    <div class="input-unit-wrap">
+                        <input type="number" id="weight" value="{{ p.weight if p and p.weight is not none else '' }}"
+                            min="30" max="300" oninput="liveUpdate()" placeholder="—" />
+                        <span class="input-unit">kg</span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="field-label">Height <span class="req">*</span></label>
-                    <div class="range-wrap">
-                        <div class="range-header">
-                            <span style="font-size:12px;color:#555;">Drag to adjust</span>
-                            <span class="range-val">
-                                <span id="heightVal">{{ p.height if p and p.height is not none else 170 }}</span> cm
-                            </span>
-                        </div>
-                        <input type="range" id="heightRange" min="120" max="220"
-                            value="{{ p.height if p and p.height is not none else 170 }}" oninput="onHeightRange()">
-                        <div class="range-labels"><span>120cm</span><span>170cm</span><span>220cm</span></div>
+                    <label class="field-label">Goal Weight *</label>
+                    <div class="input-unit-wrap">
+                        <input type="number" id="goalWeight"
+                            value="{{ p.goal_weight if p and p.goal_weight is not none else '' }}" min="30" max="300"
+                            oninput="liveUpdate()" placeholder="—" />
+                        <span class="input-unit">kg</span>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="field-label">Waist (cm)</label>
-                        <div class="input-unit-wrap">
-                            <input type="number" id="waist" value="{{ p.waist if p and p.waist is not none else '' }}"
-                                min="40" max="200" placeholder="—">
-                            <span class="input-unit">cm</span>
-                        </div>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Height: <span id="heightVal">{{ p.height if p and p.height is not none else
+                        170 }}</span> cm</label>
+                <input type="range" id="heightRange" min="120" max="220"
+                    value="{{ p.height if p and p.height is not none else 170 }}" oninput="onHeightRange()" />
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="field-label">Waist (cm)</label>
+                    <div class="input-unit-wrap">
+                        <input type="number" id="waist" value="{{ p.waist if p and p.waist is not none else '' }}"
+                            min="40" max="200" placeholder="—" />
+                        <span class="input-unit">cm</span>
                     </div>
-                    <div class="form-group">
-                        <label class="field-label">Body Fat %</label>
-                        <div class="input-unit-wrap">
-                            <input type="number" id="bodyFat"
-                                value="{{ p.body_fat if p and p.body_fat is not none else '' }}" min="3" max="60"
-                                placeholder="—">
-                            <span class="input-unit">%</span>
-                        </div>
+                </div>
+                <div class="form-group">
+                    <label class="field-label">Body Fat %</label>
+                    <div class="input-unit-wrap">
+                        <input type="number" id="bodyFat"
+                            value="{{ p.body_fat if p and p.body_fat is not none else '' }}" min="3" max="60"
+                            placeholder="—" />
+                        <span class="input-unit">%</span>
                     </div>
                 </div>
             </div>
@@ -1193,218 +149,131 @@
 
 </div>
 
-<!-- ROW 2: Fitness Level + Primary Goal -->
-<div class="profile-grid">
+<div class="profile-grid three-col">
 
-    <div class="p-card">
-        <div class="p-card-head">
-            <div class="p-card-head-left">
-                <div>
-                    <div class="p-card-title">Fitness Level</div>
-                    <div class="p-card-subtitle">Your current experience level</div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Fitness Level</div>
         </div>
-        <div class="p-card-body">
-            <div class="form-stack">
-                <div>
-                    <label class="field-label" style="margin-bottom:10px;display:block;">Select Level <span
-                            class="req">*</span></label>
-                    <div class="level-cards" id="levelCards">
-                        <div class="level-card" data-level="beginner" onclick="selectLevel(this)">
-                            <div class="level-check"></div>
-                            <div class="level-name">Beginner</div>
-                            <div class="level-desc">0–1 years</div>
-                        </div>
-                        <div class="level-card" data-level="intermediate" onclick="selectLevel(this)">
-                            <div class="level-check"></div>
-                            <div class="level-name">Intermediate</div>
-                            <div class="level-desc">1–3 years</div>
-                        </div>
-                        <div class="level-card" data-level="advanced" onclick="selectLevel(this)">
-                            <div class="level-check"></div>
-                            <div class="level-name">Advanced</div>
-                            <div class="level-desc">3+ years</div>
-                        </div>
-                    </div>
+        <div class="card-body">
+            <div class="level-cards" id="levelCards">
+                <div class="level-card" data-level="beginner" onclick="selectLevel(this)">
+                    <div class="level-check"></div><strong>Beginner</strong>
+                    <div>0–1 years</div>
                 </div>
-                <!-- Hidden select synced to card state -->
-                <input type="hidden" id="levelSelect" value="{{ p.level if p and p.level else 'beginner' }}">
+                <div class="level-card" data-level="intermediate" onclick="selectLevel(this)">
+                    <div class="level-check"></div><strong>Intermediate</strong>
+                    <div>1–3 years</div>
+                </div>
+                <div class="level-card" data-level="advanced" onclick="selectLevel(this)">
+                    <div class="level-check"></div><strong>Advanced</strong>
+                    <div>3+ years</div>
+                </div>
             </div>
+            <input type="hidden" id="levelSelect" value="{{ p.level if p and p.level else 'beginner' }}" />
         </div>
     </div>
 
-    <div class="p-card">
-        <div class="p-card-head">
-            <div class="p-card-head-left">
-                <div>
-                    <div class="p-card-title">Primary Goal</div>
-                    <div class="p-card-subtitle">What are you training for?</div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Primary Goal</div>
         </div>
-        <div class="p-card-body">
+        <div class="card-body">
             <div class="goal-options" id="goalOptions">
-
                 <div class="goal-option" data-goal="lose" onclick="selectGoal(this)">
                     <div class="goal-radio">
-                        <div class="goal-radio-dot"></div>
+                        <div class="goal-dot"></div>
                     </div>
-                    <div class="goal-info">
-                        <div class="goal-name">Lose Weight</div>
-                        <div class="goal-sub">Burn fat, lean out</div>
+                    <div><strong>Lose Weight</strong>
+                        <div>Burn fat, lean out</div>
                     </div>
                 </div>
-
                 <div class="goal-option" data-goal="muscle" onclick="selectGoal(this)">
                     <div class="goal-radio">
-                        <div class="goal-radio-dot"></div>
+                        <div class="goal-dot"></div>
                     </div>
-                    <div class="goal-info">
-                        <div class="goal-name">Build Muscle</div>
-                        <div class="goal-sub">Strength & hypertrophy</div>
+                    <div><strong>Build Muscle</strong>
+                        <div>Strength & hypertrophy</div>
                     </div>
                 </div>
-
                 <div class="goal-option" data-goal="endurance" onclick="selectGoal(this)">
                     <div class="goal-radio">
-                        <div class="goal-radio-dot"></div>
+                        <div class="goal-dot"></div>
                     </div>
-                    <div class="goal-info">
-                        <div class="goal-name">Improve Endurance</div>
-                        <div class="goal-sub">Cardio & stamina</div>
+                    <div><strong>Improve Endurance</strong>
+                        <div>Cardio & stamina</div>
                     </div>
                 </div>
-
                 <div class="goal-option" data-goal="maintain" onclick="selectGoal(this)">
                     <div class="goal-radio">
-                        <div class="goal-radio-dot"></div>
+                        <div class="goal-dot"></div>
                     </div>
-                    <div class="goal-info">
-                        <div class="goal-name">Maintain & Tone</div>
-                        <div class="goal-sub">Stay fit, refine physique</div>
+                    <div><strong>Maintain & Tone</strong>
+                        <div>Stay fit</div>
                     </div>
                 </div>
-
                 <div class="goal-option" data-goal="sport" onclick="selectGoal(this)">
                     <div class="goal-radio">
-                        <div class="goal-radio-dot"></div>
+                        <div class="goal-dot"></div>
                     </div>
-                    <div class="goal-info">
-                        <div class="goal-name">Sport Performance</div>
-                        <div class="goal-sub">Athletic training</div>
+                    <div><strong>Sport Performance</strong>
+                        <div>Athletic training</div>
                     </div>
                 </div>
-
             </div>
-            <!-- hidden field so goal value is included in save payload -->
-            <input type="hidden" id="goalSelect" value="{{ p.goal if p and p.goal else '' }}">
+            <input type="hidden" id="goalSelect" value="{{ p.goal if p and p.goal else '' }}" />
         </div>
     </div>
 
-</div>
-
-<!-- ROW 3: Gym & Schedule + Health Metrics -->
-<div class="profile-grid">
-
-    <div class="p-card">
-        <div class="p-card-head">
-            <div class="p-card-head-left">
-                <div>
-                    <div class="p-card-title">Gym & Schedule</div>
-                    <div class="p-card-subtitle">Attendance and workout preferences</div>
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Health Metrics</div>
+            <div class="card-sub">Auto-calculated</div>
+        </div>
+        <div class="card-body">
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-label">BMI</div>
+                    <div class="metric-val" id="hmBMI">—</div>
+                    <div class="metric-sub" id="hmBMIStatus">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">BMR</div>
+                    <div class="metric-val" id="hmBMR">—</div>
+                    <div class="metric-sub">kcal/day</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">To Goal</div>
+                    <div class="metric-val" id="hmToLose">—</div>
+                    <div class="metric-sub" id="hmToLoseEst">—</div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-label">TDEE</div>
+                    <div class="metric-val" id="hmTDEE">—</div>
+                    <div class="metric-sub">kcal active</div>
                 </div>
             </div>
-        </div>
-        <div class="p-card-body">
-            <div class="form-stack">
+            <div class="form-row" style="margin-top:12px">
                 <div class="form-group">
-                    <label class="field-label">Currently going to gym? <span class="req">*</span></label>
-                    <div class="toggle-group" id="gymToggle">
-                        <button class="toggle-btn" data-val="yes" onclick="setGymToggle('yes')">Yes</button>
-                        <button class="toggle-btn" data-val="no" onclick="setGymToggle('no')">No</button>
+                    <label class="field-label">Heart Rate</label>
+                    <div class="input-unit-wrap">
+                        <input type="number" id="heartRate"
+                            value="{{ p.heart_rate if p and p.heart_rate is not none else '' }}" min="30" max="120"
+                            placeholder="—" oninput="markUnsaved()" />
+                        <span class="input-unit">bpm</span>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="field-label">Session Length</label>
-                        <div class="select-wrap">
-                            <select id="sessionLen" onchange="markUnsaved()">
-                                {% set sl = p.session_len if p and p.session_len else '' %}
-                                <option value="30 min" {% if sl=='30 min' %}selected{% endif %}>30 min</option>
-                                <option value="45 min" {% if sl=='45 min' %}selected{% endif %}>45 min</option>
-                                <option value="60 min" {% if sl=='60 min' or not sl %}selected{% endif %}>60 min
-                                </option>
-                                <option value="75 min" {% if sl=='75 min' %}selected{% endif %}>75 min</option>
-                                <option value="90 min" {% if sl=='90 min' %}selected{% endif %}>90 min</option>
-                                <option value="120 min+" {% if sl=='120 min+' %}selected{% endif %}>120 min+</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="p-card">
-        <div class="p-card-head">
-            <div class="p-card-head-left">
-                <div>
-                    <div class="p-card-title">Health Metrics</div>
-                    <div class="p-card-subtitle">Auto-calculated from your stats</div>
-                </div>
-            </div>
-        </div>
-        <div class="p-card-body">
-            <div class="health-metrics">
-                <div class="health-metric">
-                    <div class="hm-label">BMI</div>
-                    <div class="hm-val"><em id="hmBMI">—</em></div>
-                    <div class="hm-sub" id="hmBMIStatus" style="color:#888;">—</div>
-                </div>
-                <div class="health-metric">
-                    <div class="hm-label">BMR</div>
-                    <div class="hm-val"><em id="hmBMR">—</em></div>
-                    <div class="hm-sub">kcal / day</div>
-                </div>
-                <div class="health-metric">
-                    <div class="hm-label">To Goal</div>
-                    <div class="hm-val"><em id="hmToLose">—</em><span class="hm-unit" id="hmToLoseUnit"></span></div>
-                    <div class="hm-sub" id="hmToLoseEst">—</div>
-                </div>
-                <div class="health-metric">
-                    <div class="hm-label">TDEE</div>
-                    <div class="hm-val"><em id="hmTDEE">—</em></div>
-                    <div class="hm-sub">kcal active day</div>
-                </div>
-            </div>
-            <div class="form-stack" style="margin-top:16px;">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label class="field-label">Resting Heart Rate</label>
-                        <div class="input-unit-wrap">
-                            <input type="number" id="heartRate"
-                                value="{{ p.heart_rate if p and p.heart_rate is not none else '' }}" min="30" max="120"
-                                placeholder="—" oninput="markUnsaved()">
-                            <span class="input-unit">bpm</span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="field-label">Activity Level</label>
-                        <div class="select-wrap">
-                            {% set al = p.activity_level if p and p.activity_level is not none else 1.55 %}
-                            <select id="activityLevel" onchange="calcHealthMetrics();markUnsaved()">
-                                <option value="1.2" {% if al|float==1.2 %}selected{% endif %}>Sedentary</option>
-                                <option value="1.375" {% if al|float==1.375 %}selected{% endif %}>Lightly Active
-                                    (1–3/wk)</option>
-                                <option value="1.55" {% if al|float==1.55 or not p or p.activity_level is none
-                                    %}selected{% endif %}>Moderately Active (3–5/wk)</option>
-                                <option value="1.725" {% if al|float==1.725 %}selected{% endif %}>Very Active (6–7/wk)
-                                </option>
-                                <option value="1.9" {% if al|float==1.9 %}selected{% endif %}>Super Active (athlete)
-                                </option>
-                            </select>
-                        </div>
+                <div class="form-group">
+                    <label class="field-label">Activity Level</label>
+                    {% set al = p.activity_level if p and p.activity_level is not none else 1.55 %}
+                    <div class="select-wrap">
+                        <select id="activityLevel" onchange="calcMetrics()">
+                            <option value="1.2" {% if al|float==1.2 %}selected{% endif %}>Sedentary</option>
+                            <option value="1.375" {% if al|float==1.375 %}selected{% endif %}>Light (1-3/wk)</option>
+                            <option value="1.55" {% if al|float==1.55 %}selected{% endif %}>Moderate (3-5/wk)</option>
+                            <option value="1.725" {% if al|float==1.725 %}selected{% endif %}>Very Active</option>
+                            <option value="1.9" {% if al|float==1.9 %}selected{% endif %}>Super Active</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -1413,417 +282,69 @@
 
 </div>
 
-<!-- DANGER ZONE -->
-<div class="p-card" style="margin-bottom:24px;">
-    <div class="p-card-head">
-        <div class="p-card-head-left">
-            <div>
-                <div class="p-card-title">Danger Zone</div>
-                <div class="p-card-subtitle">Irreversible account actions</div>
+
+<div class="card" style="margin-bottom:20px">
+    <div class="card-head">
+        <div class="card-title">Gym & Schedule</div>
+    </div>
+    <div class="card-body" style="display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+        <div>
+            <label class="field-label" style="margin-bottom:8px">Going to gym?</label>
+            <div class="toggle-group" id="gymToggle">
+                <button class="toggle-btn" data-val="yes" onclick="setGymToggle('yes')">Yes</button>
+                <button class="toggle-btn" data-val="no" onclick="setGymToggle('no')">No</button>
+            </div>
+        </div>
+        <div class="form-group" style="min-width:160px;margin-bottom:0">
+            <label class="field-label">Session Length</label>
+            <div class="select-wrap">
+                <select id="sessionLen" onchange="scheduleSave()">
+                    {% set sl = p.session_len if p and p.session_len else '' %}
+                    <option value="30 min" {% if sl=='30 min' %}selected{% endif %}>30 min</option>
+                    <option value="45 min" {% if sl=='45 min' %}selected{% endif %}>45 min</option>
+                    <option value="60 min" {% if sl=='60 min' or not sl %}selected{% endif %}>60 min</option>
+                    <option value="75 min" {% if sl=='75 min' %}selected{% endif %}>75 min</option>
+                    <option value="90 min" {% if sl=='90 min' %}selected{% endif %}>90 min</option>
+                    <option value="120 min+" {% if sl=='120 min+' %}selected{% endif %}>120 min+</option>
+                </select>
             </div>
         </div>
     </div>
-    <div class="p-card-body">
-        <div class="danger-list">
-            <div class="danger-item">
-                <div>
-                    <div class="danger-title">Reset All Progress</div>
-                    <div class="danger-desc">Clears all workout logs, streaks, and stats. Cannot be undone.</div>
-                </div>
-                <button class="btn-danger" id="resetProgressBtn">Reset Progress</button>
+</div>
+
+
+<div style="display:flex;gap:10px;margin-bottom:20px">
+    <button class="btn btn-primary" id="saveBtn">Save Changes</button>
+    <button class="btn btn-ghost" id="cancelBtn">Discard</button>
+</div>
+
+
+<div class="card danger-card" style="margin-bottom:20px">
+    <div class="card-body">
+        <div class="danger-row">
+            <div><strong>Reset All Progress</strong>
+                <div class="card-sub">Clears logs, streaks, and stats. Cannot be undone.</div>
             </div>
-            <div class="danger-item">
-                <div>
-                    <div class="danger-title">Delete Account</div>
-                    <div class="danger-desc">Permanently deletes your account and all associated data.</div>
-                </div>
-                <button class="btn-danger" id="deleteAccountBtn">Delete Account</button>
+            <button class="btn btn-danger" id="resetProgressBtn">Reset Progress</button>
+        </div>
+        <div class="danger-row">
+            <div><strong>Delete Account</strong>
+                <div class="card-sub">Permanently deletes your account and all data.</div>
             </div>
+            <button class="btn btn-danger" id="deleteAccountBtn">Delete Account</button>
         </div>
     </div>
 </div>
 
-<!-- SAVE BAR -->
-<div class="save-bar" id="saveBar">
-    <div class="save-bar-info">
-        <strong style="color:#f5a623;">⚡ You have unsaved changes</strong>
-    </div>
-    <div class="save-bar-actions">
-        <button class="btn-ghost" id="cancelBtn2">Discard</button>
-        <button class="btn-primary" id="saveBtn2">Save Changes</button>
-    </div>
-</div>
+{% endblock %}
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-    <span id="toastMsg">Profile saved successfully!</span>
-</div>
-
-<!-- CONFIRM MODAL: Reset Progress -->
-<div class="confirm-modal-bg" id="resetModal">
-    <div class="confirm-modal">
-        <h3>Reset Progress?</h3>
-        <p>This will clear your streak and all logged workout data. This action cannot be undone.</p>
-        <div class="confirm-modal-actions">
-            <button class="btn-ghost" onclick="closeModal('resetModal')">Cancel</button>
-            <button class="btn-danger" id="confirmResetBtn">Yes, Reset</button>
-        </div>
-    </div>
-</div>
-
-<!-- CONFIRM MODAL: Delete Account -->
-<div class="confirm-modal-bg" id="deleteModal">
-    <div class="confirm-modal">
-        <h3>Delete Account?</h3>
-        <p>This will permanently delete your account and all associated data. There is no way to recover it.</p>
-        <div class="confirm-modal-actions">
-            <button class="btn-ghost" onclick="closeModal('deleteModal')">Cancel</button>
-            <button class="btn-danger" id="confirmDeleteBtn">Yes, Delete My Account</button>
-        </div>
-    </div>
-</div>
-
+{% block extra_js %}
 <script>
-    (function () {
-
-        const DB = {
-            level: {% if p and p.level %}"{{ p.level }}"{% else %} null{% endif %},
-        going_to_gym: {% if p and p.going_to_gym %} "{{ p.going_to_gym }}"{% else %} null{% endif %},
-        goal: {% if p and p.goal is defined and p.goal %} "{{ p.goal }}"{% else %} null{% endif %},
+    window.PROFILE_DB = {
+        level: {{ ('"' ~p.level ~ '"') if p and p.level else 'null' }},
+    going_to_gym: { { ('"' ~p.going_to_gym ~ '"') if p and p.going_to_gym else 'null' } },
+    goal: { { ('"' ~p.goal ~ '"') if p and p.goal else 'null' } }
     };
-
-    /* ─────────────────────────────────────────
-       LEVEL CARDS
-    ───────────────────────────────────────── */
-    function selectLevel(card, silent) {
-        const level = card.dataset.level;
-        document.querySelectorAll('.level-card').forEach(c => {
-            c.className = 'level-card';
-            c.querySelector('.level-check').textContent = '';
-        });
-        card.classList.add('sel-' + level);
-        card.querySelector('.level-check').textContent = '✓';
-        document.getElementById('levelSelect').value = level;
-        if (!silent) markUnsaved();
-    }
-    window.selectLevel = selectLevel;
-
-    /* ─────────────────────────────────────────
-       GOAL OPTIONS
-    ───────────────────────────────────────── */
-    function selectGoal(opt, silent) {
-        document.querySelectorAll('.goal-option').forEach(o => o.classList.remove('selected'));
-        opt.classList.add('selected');
-        document.getElementById('goalSelect').value = opt.dataset.goal;
-        if (!silent) markUnsaved();
-    }
-    window.selectGoal = selectGoal;
-
-    /* ─────────────────────────────────────────
-       GYM TOGGLE
-    ───────────────────────────────────────── */
-    function setGymToggle(val, silent) {
-        document.querySelectorAll('#gymToggle .toggle-btn').forEach(b => {
-            b.classList.remove('active-yes', 'active-no');
-        });
-        const active = document.querySelector('#gymToggle [data-val="' + val + '"]');
-        if (active) active.classList.add(val === 'yes' ? 'active-yes' : 'active-no');
-        if (!silent) markUnsaved();
-    }
-    window.setGymToggle = setGymToggle;
-
-    /* ─────────────────────────────────────────
-       LIVE HERO UPDATE
-    ───────────────────────────────────────── */
-    function liveUpdate() {
-        const name = document.getElementById('firstName').value.trim();
-        document.getElementById('heroName').textContent = name || 'Your Name';
-
-        const ini = name ? name[0].toUpperCase() : '?';
-        document.getElementById('profileAvatarInitials').textContent = ini;
-        document.getElementById('heroBgText').textContent = name ? name.split(' ')[0].toUpperCase() : '';
-
-        const ageEl = document.getElementById('heroAge');
-        const ageVal = document.getElementById('age').value;
-        if (ageEl) {
-            if (ageVal) {
-                ageEl.textContent = ageVal + ' yrs';
-                ageEl.style.display = '';
-            } else {
-                ageEl.style.display = 'none';
-            }
-        }
-
-        const wEl = document.getElementById('heroWeight');
-        if (wEl) {
-            const wv = document.getElementById('weight').value;
-            if (wv) { wEl.textContent = wv; wEl.closest('.hero-stat').style.display = ''; }
-        }
-
-        const gwEl = document.getElementById('heroGoalW');
-        if (gwEl) {
-            const gwv = document.getElementById('goalWeight').value;
-            if (gwv) { gwEl.textContent = gwv; gwEl.closest('.hero-stat').style.display = ''; }
-        }
-
-        calcHealthMetrics();
-        markUnsaved();
-    }
-    window.liveUpdate = liveUpdate;
-
-    function onHeightRange() {
-        const v = document.getElementById('heightRange').value;
-        document.getElementById('heightVal').textContent = v;
-        const hEl = document.getElementById('heroHeight');
-        if (hEl) { hEl.textContent = v; hEl.closest('.hero-stat').style.display = ''; }
-        calcHealthMetrics();
-        markUnsaved();
-    }
-    window.onHeightRange = onHeightRange;
-
-    /* ─────────────────────────────────────────
-       HEALTH METRICS CALC — only if data exists
-    ───────────────────────────────────────── */
-    function calcHealthMetrics() {
-        const wRaw = document.getElementById('weight').value;
-        const hRaw = document.getElementById('heightRange').value;
-        const ageRaw = document.getElementById('age').value;
-        const gwRaw = document.getElementById('goalWeight').value;
-        const activity = parseFloat(document.getElementById('activityLevel').value) || 1.55;
-        const gender = document.getElementById('gender').value;
-
-        const w = parseFloat(wRaw);
-        const h = parseFloat(hRaw);
-        const age = parseFloat(ageRaw);
-        const gw = parseFloat(gwRaw);
-
-        const hasW = !isNaN(w) && w > 0;
-        const hasH = !isNaN(h) && h > 0;
-        const hasAge = !isNaN(age) && age > 0;
-        const hasGw = !isNaN(gw) && gw > 0;
-
-        /* BMI */
-        if (hasW && hasH) {
-            const bmi = w / ((h / 100) * (h / 100));
-            document.getElementById('hmBMI').textContent = bmi.toFixed(1);
-            document.getElementById('heroBMI').textContent = bmi.toFixed(1);
-
-            // Show heroBMI stat section
-            const bmiStat = document.getElementById('heroBMIStat');
-            if (bmiStat) bmiStat.style.display = '';
-
-            let bmiStatus, bmiColor;
-            if (bmi < 18.5) { bmiStatus = 'Underweight'; bmiColor = '#60a5fa'; }
-            else if (bmi < 25) { bmiStatus = 'Normal weight'; bmiColor = '#4ade80'; }
-            else if (bmi < 30) { bmiStatus = 'Overweight'; bmiColor = '#f5a623'; }
-            else { bmiStatus = 'Obese'; bmiColor = '#f87171'; }
-
-            const bmiEl = document.getElementById('hmBMIStatus');
-            bmiEl.textContent = bmiStatus;
-            bmiEl.style.color = bmiColor;
-        } else {
-            document.getElementById('hmBMI').textContent = '—';
-            document.getElementById('hmBMIStatus').textContent = 'Enter weight & height';
-            document.getElementById('hmBMIStatus').style.color = '#555';
-            if (document.getElementById('heroBMI')) document.getElementById('heroBMI').textContent = '—';
-        }
-
-        /* BMR + TDEE */
-        if (hasW && hasH && hasAge) {
-            const bmr = gender === 'female'
-                ? 10 * w + 6.25 * h - 5 * age - 161
-                : 10 * w + 6.25 * h - 5 * age + 5;
-            document.getElementById('hmBMR').textContent = Math.round(bmr).toLocaleString();
-            document.getElementById('hmTDEE').textContent = Math.round(bmr * activity).toLocaleString();
-        } else {
-            document.getElementById('hmBMR').textContent = '—';
-            document.getElementById('hmTDEE').textContent = '—';
-        }
-
-        /* To Goal */
-        if (hasW && hasGw) {
-            const diff = w - gw;
-            document.getElementById('hmToLose').textContent = Math.abs(diff).toFixed(1);
-            document.getElementById('hmToLoseUnit').textContent = 'kg';
-            document.getElementById('hmToLoseEst').textContent = diff > 0
-                ? '~' + Math.ceil(diff / 0.5) + ' weeks est.'
-                : diff < 0
-                    ? 'Bulk: +' + Math.abs(diff).toFixed(1) + 'kg to go'
-                    : 'Goal reached!';
-        } else {
-            document.getElementById('hmToLose').textContent = '—';
-            document.getElementById('hmToLoseUnit').textContent = '';
-            document.getElementById('hmToLoseEst').textContent = 'Enter weight & goal';
-        }
-    }
-    window.calcHealthMetrics = calcHealthMetrics;
-
-    /* ─────────────────────────────────────────
-       UNSAVED STATE — only shown when dirty
-    ───────────────────────────────────────── */
-    let unsaved = false;
-
-    function markUnsaved() {
-        if (unsaved) return;
-        unsaved = true;
-        document.getElementById('saveBar').classList.add('visible');
-    }
-    window.markUnsaved = markUnsaved;
-
-    function clearUnsaved() {
-        unsaved = false;
-        document.getElementById('saveBar').classList.remove('visible');
-    }
-
-    /* ─────────────────────────────────────────
-       SAVE PROFILE
-    ───────────────────────────────────────── */
-    function saveProfile() {
-        const payload = {
-            first_name: document.getElementById('firstName').value.trim(),
-            age: document.getElementById('age').value,
-            gender: document.getElementById('gender').value,
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            dob: document.getElementById('dob').value,
-            weight: document.getElementById('weight').value,
-            goal_weight: document.getElementById('goalWeight').value,
-            height: document.getElementById('heightRange').value,
-            waist: document.getElementById('waist').value,
-            body_fat: document.getElementById('bodyFat').value,
-            level: document.getElementById('levelSelect').value,
-            heart_rate: document.getElementById('heartRate').value,
-            activity_level: document.getElementById('activityLevel').value,
-            session_len: document.getElementById('sessionLen').value,
-            going_to_gym: document.querySelector('#gymToggle .toggle-btn.active-yes, #gymToggle .toggle-btn.active-no')
-                ?.dataset.val || 'no',
-            goal: document.getElementById('goalSelect').value,
-        };
-
-        fetch('/profile/save', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-            .then(r => r.json())
-            .then(data => {
-                if (data.success) {
-                    clearUnsaved();
-                    showToast('Profile saved successfully!', false);
-                } else {
-                    showToast('Error: ' + (data.error || 'Could not save'), true);
-                }
-            })
-            .catch(() => showToast('Network error — changes not saved', true));
-    }
-
-    function discardChanges() {
-        if (!unsaved) return;
-        if (confirm('Discard all unsaved changes?')) window.location.reload();
-    }
-
-    if (document.getElementById('saveBtn2')) document.getElementById('saveBtn2').addEventListener('click', saveProfile);
-    if (document.getElementById('cancelBtn2')) document.getElementById('cancelBtn2').addEventListener('click', discardChanges);
-
-    /* ─────────────────────────────────────────
-       TOAST
-    ───────────────────────────────────────── */
-    let toastTimer;
-    function showToast(msg, isError) {
-        const t = document.getElementById('toast');
-        document.getElementById('toastMsg').textContent = msg;
-        const icon = document.getElementById('toastIcon');
-        if (isError) {
-            t.classList.add('error');
-            icon.setAttribute('stroke', '#f87171');
-            icon.innerHTML = '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>';
-        } else {
-            t.classList.remove('error');
-            icon.setAttribute('stroke', '#4ade80');
-            icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-        }
-        t.classList.add('show');
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
-    }
-
-    /* ─────────────────────────────────────────
-       CONFIRM MODALS → simple confirm dialogs
-    ───────────────────────────────────────── */
-    document.getElementById('resetProgressBtn').addEventListener('click', () => {
-        if (confirm('Reset all progress? This cannot be undone.')) {
-            fetch('/profile/reset-progress', { method: 'POST' })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Progress reset successfully!');
-                        const streakEl = document.getElementById('streak-count');
-                        if (streakEl) streakEl.textContent = '0';
-                    } else {
-                        alert('Error: ' + (data.error || 'Could not reset'));
-                    }
-                })
-                .catch(() => alert('Network error — reset failed'));
-        }
-    });
-
-    document.getElementById('deleteAccountBtn').addEventListener('click', () => {
-        if (confirm('Delete your account? This is permanent and cannot be undone.')) {
-            fetch('/profile/delete-account', { method: 'POST' })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = data.redirect || '/';
-                    } else {
-                        alert('Error: ' + (data.error || 'Could not delete account'));
-                    }
-                })
-                .catch(() => alert('Network error — deletion failed'));
-        }
-    });
-
-    /* ─────────────────────────────────────────
-       INPUT LISTENERS — mark unsaved on change
-    ───────────────────────────────────────── */
-    ['waist', 'bodyFat', 'heartRate'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('input', markUnsaved);
-    });
-    ['email', 'phone', 'dob'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('input', markUnsaved);
-    });
-
-    /* ─────────────────────────────────────────
-       INIT — restore state from DB values
-    ───────────────────────────────────────── */
-    (function init() {
-        /* Fitness level */
-        const savedLevel = DB.level || null;
-        if (savedLevel) {
-            const card = document.querySelector('.level-card[data-level="' + savedLevel + '"]');
-            if (card) selectLevel(card, true);
-        }
-        /* No level set → leave all unselected */
-
-        /* Gym toggle */
-        if (DB.going_to_gym) {
-            setGymToggle(DB.going_to_gym, true);
-        }
-        /* No gym value set → leave both unselected */
-
-        /* Goal */
-        if (DB.goal) {
-            const goalOpt = document.querySelector('.goal-option[data-goal="' + DB.goal + '"]');
-            if (goalOpt) selectGoal(goalOpt, true);
-        }
-        /* No goal set → leave all unselected */
-
-        /* Recalculate metrics from DB values */
-        calcHealthMetrics();
-    })();
-
-}) ();
 </script>
-
+<script src="/js/profile.js"></script>
 {% endblock %}

@@ -1,37 +1,94 @@
 {% extends "base.html" %}
-{% block title %}Gym Bhai — legs & glutes{% endblock %}
-{% block sb_arms %}active{% endblock %}
+{% block title %}Gym Tracker — Legs & Glutes{% endblock %}
+{% block sb_legs %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/blog.css') }}">
+{% endblock %}
 
 {% block content %}
+
 <div id="progressBar"></div>
 
-<style>
-    #progressBar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 6px;
-        width: 0%;
-        background: linear-gradient(to right, #7e0707, #ff2b00);
-        z-index: 9999;
-        transition: width 0.2s ease;
-    }
-</style>
-
-
 <div>
-    <h1> this page is about legs and glutes</h1>
+    <h1>Legs & Glutes</h1>
+    <p>Strong legs and glutes are the foundation of athletic performance and a balanced physique. These exercises target
+        your quads, hamstrings, glutes, and calves for complete lower body development.</p>
+
+    <hr>
+
+    <h2>1. Barbell Back Squat</h2>
+    <p>The squat is the king of all lower body exercises. Place a barbell across your upper back, stand with feet
+        shoulder-width apart, and descend until your thighs are at least parallel to the floor. Drive through your heels
+        to stand back up. Aim for 4 sets of 5–8 reps for strength, or 3 sets of 10–12 for hypertrophy.</p>
+    <p><strong>Muscles worked:</strong> Quadriceps, Glutes, Hamstrings, Core, Spinal erectors</p>
+    <a href="https://www.youtube.com/watch?v=ultWZbUMPL8" target="_blank" title="Watch Barbell Back Squat on YouTube">
+        <img src="https://img.youtube.com/vi/ultWZbUMPL8/hqdefault.jpg" alt="Barbell Back Squat Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>2. Romanian Deadlift (RDL)</h2>
+    <p>The RDL is one of the best exercises for hamstring and glute development. Hold a barbell with an overhand grip,
+        hinge at the hips while keeping your back flat, and lower the bar along your legs until you feel a strong
+        stretch in your hamstrings. Drive your hips forward to return to standing. Do 3–4 sets of 8–12 reps.</p>
+    <p><strong>Muscles worked:</strong> Hamstrings, Glutes, Spinal erectors</p>
+    <a href="https://www.youtube.com/watch?v=jEy_czb3RKA" target="_blank" title="Watch Romanian Deadlift on YouTube">
+        <img src="https://img.youtube.com/vi/jEy_czb3RKA/hqdefault.jpg" alt="Romanian Deadlift Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>3. Hip Thrust</h2>
+    <p>The hip thrust is arguably the most effective glute isolation exercise. Rest your upper back on a bench, place a
+        barbell across your hips, and drive your hips upward until your body forms a straight line from knees to
+        shoulders. Squeeze your glutes at the top. Perform 3–4 sets of 10–15 reps.</p>
+    <p><strong>Muscles worked:</strong> Glutes (all heads), Hamstrings, Core</p>
+    <a href="https://www.youtube.com/watch?v=SEdqd1n0cvg" target="_blank" title="Watch Hip Thrust on YouTube">
+        <img src="https://img.youtube.com/vi/SEdqd1n0cvg/hqdefault.jpg" alt="Hip Thrust Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>4. Walking Lunges</h2>
+    <p>Walking lunges build single-leg strength and improve balance. Step forward with one leg, lower your back knee
+        toward the floor, then push off and bring the back leg forward to take the next lunge step. Hold dumbbells for
+        added resistance. Do 3 sets of 10–12 reps per leg.</p>
+    <p><strong>Muscles worked:</strong> Quadriceps, Glutes, Hamstrings, Calves</p>
+    <a href="https://www.youtube.com/watch?v=L8fvypPrzzs" target="_blank" title="Watch Walking Lunges on YouTube">
+        <img src="https://img.youtube.com/vi/L8fvypPrzzs/hqdefault.jpg" alt="Walking Lunges Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>5. Leg Press</h2>
+    <p>The leg press is a machine-based compound exercise that lets you load the quads and glutes heavily with reduced
+        spinal load. Place your feet on the platform at shoulder width, lower the sled until your knees reach 90
+        degrees, then press back up without locking your knees. Perform 3–4 sets of 10–15 reps.</p>
+    <p><strong>Muscles worked:</strong> Quadriceps, Glutes, Hamstrings</p>
+    <a href="https://www.youtube.com/watch?v=IZxyjW7MPJQ" target="_blank" title="Watch Leg Press on YouTube">
+        <img src="https://img.youtube.com/vi/IZxyjW7MPJQ/hqdefault.jpg" alt="Leg Press Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>Tips for Legs & Glutes Training</h2>
+    <ul>
+        <li>Always warm up with bodyweight squats and hip circles before loading up.</li>
+        <li>Focus on a full range of motion — partial reps limit muscle activation.</li>
+        <li>Train legs at least twice a week for best results.</li>
+        <li>Don't skip calves — include standing or seated calf raises at the end of your session.</li>
+        <li>Progressive overload is key — aim to increase weight or reps each week.</li>
+    </ul>
 </div>
 
+{% endblock %}
 
-<script>
-    window.addEventListener("scroll", function () {
-        let scrollTop = document.documentElement.scrollTop;
-        let scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        let progress = (scrollTop / scrollHeight) * 100;
-
-        document.getElementById("progressBar").style.width = progress + "%";
-    });
-</script>
-
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/blog.js') }}"></script>
 {% endblock %}

@@ -2,20 +2,14 @@ from flask import render_template, request, redirect, url_for, jsonify, session,
 from flask_login import login_user, logout_user, current_user, login_required
 from models import User, Persondetails, DailyLog, WorkoutLog
 from app import client
+from app import meal_model, le_meal, le_exercise
 from datetime import date, timedelta
 import random
 import json
 
-
-
-
-# ── Workout Plans ──────────────────────────────────────────────────────────────
-# day_index: 0=Mon … 6=Sun  |  level: beginner / intermediate / advanced
-# day 2 and day 5 (0-indexed) are Rest days for all levels
-
 WORKOUT_PLANS = {
     "beginner": [
-        {   # Day 1 — Abs & Core
+        {  
             "day": 1, "name": "Abs & Core", "focus": "Core Stability",
             "duration": "~35 min",
             "exercises": [
@@ -25,7 +19,7 @@ WORKOUT_PLANS = {
                 {"name": "Bird-Dog",            "sets": 3, "reps": "10/side","rest": "45s"},
             ]
         },
-        {   # Day 2 — Arms & Shoulders
+        {   
             "day": 2, "name": "Arms & Shoulders", "focus": "Upper Body",
             "duration": "~35 min",
             "exercises": [
@@ -35,11 +29,11 @@ WORKOUT_PLANS = {
                 {"name": "Arm Circles",                    "sets": 2, "reps": "15",  "rest": "30s"},
             ]
         },
-        {   # Day 3 — Rest
+        {  
             "day": 3, "name": "Rest Day", "focus": "Recovery",
             "duration": "—", "exercises": []
         },
-        {   # Day 4 — Legs & Glutes
+        {   
             "day": 4, "name": "Legs & Glutes", "focus": "Lower Body",
             "duration": "~40 min",
             "exercises": [
@@ -49,7 +43,7 @@ WORKOUT_PLANS = {
                 {"name": "Calf Raises",       "sets": 3, "reps": "15",     "rest": "30s"},
             ]
         },
-        {   # Day 5 — Cardio & HIIT
+        {   
             "day": 5, "name": "Cardio & HIIT", "focus": "Endurance",
             "duration": "~40 min",
             "exercises": [
@@ -59,11 +53,11 @@ WORKOUT_PLANS = {
                 {"name": "Light Jog / Brisk Walk", "sets": 1, "reps": "10 min","rest": "—"},
             ]
         },
-        {   # Day 6 — Rest
+        {   
             "day": 6, "name": "Rest Day", "focus": "Recovery",
             "duration": "—", "exercises": []
         },
-        {   # Day 7 — Optional
+        {  
             "day": 7, "name": "Optional Active Recovery", "focus": "Mobility",
             "duration": "~20 min",
             "exercises": [
@@ -72,7 +66,7 @@ WORKOUT_PLANS = {
         },
     ],
     "intermediate": [
-        {   # Day 1
+        {   
             "day": 1, "name": "Abs & Core", "focus": "Core Strength",
             "duration": "~40 min",
             "exercises": [
@@ -82,7 +76,7 @@ WORKOUT_PLANS = {
                 {"name": "Russian Twists",     "sets": 3, "reps": "20",     "rest": "45s"},
             ]
         },
-        {   # Day 2
+        {   
             "day": 2, "name": "Arms & Shoulders", "focus": "Upper Body",
             "duration": "~45 min",
             "exercises": [
@@ -92,11 +86,11 @@ WORKOUT_PLANS = {
                 {"name": "Tricep Dips",            "sets": 3, "reps": "12", "rest": "60s"},
             ]
         },
-        {   # Day 3
+        {   
             "day": 3, "name": "Rest Day", "focus": "Recovery",
             "duration": "—", "exercises": []
         },
-        {   # Day 4
+        {   
             "day": 4, "name": "Legs & Glutes", "focus": "Lower Body",
             "duration": "~50 min",
             "exercises": [
@@ -106,7 +100,7 @@ WORKOUT_PLANS = {
                 {"name": "Step-ups",      "sets": 3, "reps": "10/leg", "rest": "60s"},
             ]
         },
-        {   # Day 5
+        {   
             "day": 5, "name": "Cardio & HIIT", "focus": "Endurance",
             "duration": "~45 min",
             "exercises": [
@@ -117,11 +111,11 @@ WORKOUT_PLANS = {
                 {"name": "Cool-down Jog",    "sets": 1, "reps": "5 min",  "rest": "—"},
             ]
         },
-        {   # Day 6
+        {   
             "day": 6, "name": "Rest Day", "focus": "Recovery",
             "duration": "—", "exercises": []
         },
-        {   # Day 7
+        {   
             "day": 7, "name": "Optional Active Recovery", "focus": "Mobility",
             "duration": "~30 min",
             "exercises": [
@@ -130,7 +124,7 @@ WORKOUT_PLANS = {
         },
     ],
     "advanced": [
-        {   # Day 1
+        {   
             "day": 1, "name": "Abs & Core", "focus": "Core Power",
             "duration": "~50 min",
             "exercises": [
@@ -140,7 +134,7 @@ WORKOUT_PLANS = {
                 {"name": "Russian Twists with Weight",         "sets": 3, "reps": "20",     "rest": "45s"},
             ]
         },
-        {   # Day 2
+        {   
             "day": 2, "name": "Arms & Shoulders", "focus": "Upper Body Strength",
             "duration": "~55 min",
             "exercises": [
@@ -150,11 +144,11 @@ WORKOUT_PLANS = {
                 {"name": "Tricep Dips / Close Grip Push-ups","sets": 3, "reps": "15", "rest": "60s"},
             ]
         },
-        {   # Day 3
+        {   
             "day": 3, "name": "Rest Day", "focus": "Recovery",
             "duration": "—", "exercises": []
         },
-        {   # Day 4
+        {   
             "day": 4, "name": "Legs & Glutes", "focus": "Lower Body Strength",
             "duration": "~60 min",
             "exercises": [
@@ -165,7 +159,7 @@ WORKOUT_PLANS = {
                 {"name": "Step-ups",                    "sets": 3, "reps": "15/leg", "rest": "60s"},
             ]
         },
-        {   # Day 5
+        {   
             "day": 5, "name": "Cardio & HIIT", "focus": "Peak Conditioning",
             "duration": "~60 min",
             "exercises": [
@@ -176,11 +170,11 @@ WORKOUT_PLANS = {
                 {"name": "Sprints / High-Intensity Intervals","sets": 1,"reps": "10 min",  "rest": "—"},
             ]
         },
-        {   # Day 6
+        {   
             "day": 6, "name": "Rest Day", "focus": "Recovery",
             "duration": "—", "exercises": []
         },
-        {   # Day 7
+        {   
             "day": 7, "name": "Optional Active Recovery", "focus": "Mobility",
             "duration": "~30 min",
             "exercises": [
@@ -223,16 +217,13 @@ def register_routes(app, db, bcrypt):
     ]
 
     def get_today():
-        """
-        Returns today's date.
-        If test_date is set in session → use that instead.
-        """
+
         if 'test_date' in session:
             return date.fromisoformat(session['test_date'])
         return date.today()
     @app.route('/set-test-date', methods=['POST'])
     def set_test_date():
-        new_date = request.form.get('date')  # YYYY-MM-DD
+        new_date = request.form.get('date') 
 
         if new_date:
             session['test_date'] = new_date
@@ -244,7 +235,6 @@ def register_routes(app, db, bcrypt):
         index = (today.year * 365 + today.month * 31 + today.day) % len(QUOTES)
         return QUOTES[index]
 
-    # ── Helpers ────────────────────────────────────────────────────────────────
     def _int(val, default=None):
         try:
             return int(val)
@@ -264,7 +254,6 @@ def register_routes(app, db, bcrypt):
         return s if s else default
 
     def _get_or_create_daily_log(uid, log_date_str):
-        """Return today's DailyLog row, creating it if it doesn't exist."""
         log = DailyLog.query.filter_by(uid=uid, log_date=log_date_str).first()
         if not log:
             log = DailyLog(uid=uid, log_date=log_date_str)
@@ -273,22 +262,14 @@ def register_routes(app, db, bcrypt):
         return log
 
     def _get_today_workout(level):
-        """Return today's workout plan based on the user's level and weekday."""
         level = (level or "beginner").lower()
         if level not in WORKOUT_PLANS:
             level = "beginner"
         plan = WORKOUT_PLANS[level]
-        # Monday=0 … Sunday=6 → map to plan index 0..6
         day_index = get_today().weekday()
         return plan[day_index]
 
     def _update_streak(uid, log_date_str):
-        """
-        Call after a post-workout is submitted.
-        - Increments streak if yesterday had a post submission OR this is the first ever.
-        - Resets streak to 1 if yesterday was missed.
-        - Updates best_streak.
-        """
         personal = Persondetails.query.filter_by(uid=uid).first()
         if not personal:
             return
@@ -300,12 +281,10 @@ def register_routes(app, db, bcrypt):
         current_streak = personal.streak or 0
 
         if current_streak == 0:
-            # First ever, or after a reset
             new_streak = 1
         elif yesterday_log and yesterday_log.post_submitted:
             new_streak = current_streak + 1
         else:
-            # Gap detected — reset
             new_streak = 1
 
         personal.streak = new_streak
@@ -313,16 +292,11 @@ def register_routes(app, db, bcrypt):
             personal.best_streak = new_streak
 
     def _generate_consistency_score(uid):
-        """
-        Ask the LLM to compute a 0-100 consistency score based on
-        the last 30 days of data, then store it.
-        Returns the score integer and feedback string.
-        """
+
         personal = Persondetails.query.filter_by(uid=uid).first()
         if not personal:
             return 0, "No profile found."
 
-        # Gather last 30 days of logs
         today = get_today()
         thirty_days_ago = (today - timedelta(days=30)).isoformat()
         logs = DailyLog.query.filter(
@@ -350,7 +324,7 @@ def register_routes(app, db, bcrypt):
         best_streak = personal.best_streak or 0
 
         prompt = f"""
-You are a fitness analytics assistant for GymBhai app.
+You are a fitness analytics assistant for GymTracker app.
 Based on the data below, compute a Consistency Score from 0 to 100 and give brief,
 motivating feedback (2-3 sentences max). Respond ONLY with valid JSON in this exact format:
 {{"score": <integer 0-100>, "feedback": "<2-3 sentence motivating feedback>"}}
@@ -376,28 +350,23 @@ Weigh workout frequency (40%), streak (25%), water intake (15%), steps (10%), se
                 ]
             )
             raw = completion.choices[0].message.content.strip()
-            # strip markdown fences if present
             raw = raw.replace("```json", "").replace("```", "").strip()
             parsed = json.loads(raw)
             score    = max(0, min(100, int(parsed.get("score", 0))))
             feedback = parsed.get("feedback", "Keep pushing — every session counts!")
         except Exception as e:
             print("[ConsistencyScore error]", e)
-            # Fallback: simple calculation
             score = min(100, int((sessions_done / total_days) * 100))
             feedback = "Keep pushing — every session counts!"
 
-        # Persist
         personal.consistency_score    = score
         personal.consistency_feedback = feedback
         personal.score_updated_date   = today.isoformat()
         return score, feedback
 
     def _generate_session_feedback(daily_log, personal):
-        """Ask the LLM to give rich, insight-driven feedback based on full profile + history."""
         try:
             uid = daily_log.uid
-            # ── Pull last 30 days for pattern analysis ──────────────────────
             thirty_ago = (get_today() - timedelta(days=30)).isoformat()
             recent_logs = DailyLog.query.filter(
                 DailyLog.uid == uid,
@@ -405,7 +374,6 @@ Weigh workout frequency (40%), streak (25%), water intake (15%), steps (10%), se
                 DailyLog.post_submitted == True
             ).order_by(DailyLog.log_date.desc()).all()
 
-            # Compute averages from history
             def avg(vals):
                 vals = [v for v in vals if v is not None]
                 return sum(vals) / len(vals) if vals else None
@@ -417,7 +385,6 @@ Weigh workout frequency (40%), streak (25%), water intake (15%), steps (10%), se
             hist_duration = avg([l.post_duration     for l in recent_logs])
             hist_steps    = avg([l.steps             for l in recent_logs])
 
-            # Energy trend: last 7 vs prior 7
             energy_trend = "stable"
             last7  = [l.pre_energy_level for l in recent_logs[:7]  if l.pre_energy_level]
             prior7 = [l.pre_energy_level for l in recent_logs[7:14] if l.pre_energy_level]
@@ -425,7 +392,7 @@ Weigh workout frequency (40%), streak (25%), water intake (15%), steps (10%), se
                 diff = (sum(last7)/len(last7)) - (sum(prior7)/len(prior7))
                 energy_trend = "improving" if diff > 0.4 else "declining" if diff < -0.4 else "stable"
 
-            # Injury flag
+            
             injury_days = sum(
                 1 for l in recent_logs
                 if l.pre_injuries and l.pre_injuries.strip()
@@ -434,7 +401,7 @@ Weigh workout frequency (40%), streak (25%), water intake (15%), steps (10%), se
 
             sessions_count = len(recent_logs)
 
-            # ── Format history block ────────────────────────────────────────
+            
             if sessions_count > 0:
                 history_block = f"""
 30-Day History ({sessions_count} sessions logged):
@@ -449,12 +416,11 @@ Weigh workout frequency (40%), streak (25%), water intake (15%), steps (10%), se
             else:
                 history_block = "30-Day History: This is their first ever logged session!"
 
-            # ── Safe profile values ─────────────────────────────────────────
             def s(val, fallback="unknown"):
                 return val if val is not None else fallback
 
             prompt = f"""
-You are GymBhai AI Coach — a knowledgeable, warm, motivating personal fitness coach.
+You are GymTracker AI Coach — a knowledgeable, warm, motivating personal fitness coach.
 
 STRICT RULES:
 1. Write exactly 3-5 sentences as a flowing paragraph. NO bullet points, NO headers.
@@ -509,7 +475,7 @@ Now write the personalised coaching feedback paragraph:"""
                 model="llama-3.3-70b-versatile",
                 messages=[
                     {"role": "system", "content": (
-                        "You are GymBhai AI Coach. Write warm, specific, insight-driven fitness feedback. "
+                        "You are GymTracker AI Coach. Write warm, specific, insight-driven fitness feedback. "
                         "Always write as a flowing paragraph — no bullet points, no headers. "
                         "Speak directly to the user using 'you' and 'your'."
                     )},
@@ -523,7 +489,7 @@ Now write the personalised coaching feedback paragraph:"""
             print("[SessionFeedback error]", e)
             return "Great work completing your session today! Keep up the consistency — every rep counts toward your goal."
 
-    # ─── Public Routes ─────────────────────────────────────────────────────────
+
 
     @app.route("/")
     def index():
@@ -606,7 +572,6 @@ Now write the personalised coaching feedback paragraph:"""
         db.session.commit()
         return jsonify({"status": "success", "redirect": url_for('home')})
 
-    # ─── Protected Routes ──────────────────────────────────────────────────────
 
     @app.after_request
     def apply_nocache_to_protected(response):
@@ -624,14 +589,12 @@ Now write the personalised coaching feedback paragraph:"""
         uid     = current_user.uid
         personal = current_user.personal
 
-        # Today's log
         daily_log = DailyLog.query.filter_by(uid=uid, log_date=today).first()
 
-        # Today's workout plan
+     
         level   = (personal.level if personal else None) or "beginner"
         workout = _get_today_workout(level)
 
-        # Which sets were already ticked today
         completed_sets = {}
         if workout["exercises"]:
             wlogs = WorkoutLog.query.filter_by(uid=uid, log_date=today).all()
@@ -641,15 +604,12 @@ Now write the personalised coaching feedback paragraph:"""
                     completed_sets[key] = set()
                 completed_sets[key].add(wl.set_index)
 
-        # Streak
         streak = (personal.streak if personal else 0) or 0
         best_streak = (personal.best_streak if personal else 0) or 0
 
-        # Consistency score
         consistency_score    = (personal.consistency_score if personal else 0) or 0
         consistency_feedback = (personal.consistency_feedback if personal else None) or "Complete your first session to generate your score!"
 
-        # Monthly stats (last 30 days)
         thirty_ago = (get_today() - timedelta(days=30)).isoformat()
         month_logs = DailyLog.query.filter(
             DailyLog.uid == uid,
@@ -658,7 +618,6 @@ Now write the personalised coaching feedback paragraph:"""
         sessions_this_month = sum(1 for l in month_logs if l.post_submitted)
         missed_days = max(0, 30 - sessions_this_month - sum(1 for l in month_logs if not l.post_submitted and not l.pre_submitted))
 
-        # Weekly bars (Mon–Sun this week)
         today_dt = get_today()
         week_start = today_dt - timedelta(days=today_dt.weekday())
         week_data  = []
@@ -693,15 +652,13 @@ Now write the personalised coaching feedback paragraph:"""
                 "height": height
             })
 
-        # Water intake today
         water_today = (daily_log.pre_water_intake if daily_log else 0) or 0
         # Steps today
         steps_today = (daily_log.steps if daily_log else 0) or 0
 
-        # Session feedback
+      
         session_feedback = (daily_log.llm_feedback if daily_log else None)
 
-        # Weekly summary
         week_logs = [l for l in DailyLog.query.filter(
             DailyLog.uid == uid,
             DailyLog.log_date >= week_start.isoformat(),
@@ -716,36 +673,35 @@ Now write the personalised coaching feedback paragraph:"""
             "home.html",
             quote={"text": quote["quote"], "author": quote["author"]},
             show_chatbot=False,
-            # workout
+          
             workout=workout,
             completed_sets=completed_sets,
-            # streak
+          
             streak=streak,
             best_streak=best_streak,
-            # consistency
+          
             consistency_score=consistency_score,
             consistency_feedback=consistency_feedback,
             sessions_this_month=sessions_this_month,
             missed_days=missed_days,
-            # weekly
+           
             week_data=week_data,
             weekly_sessions=weekly_sessions,
             weekly_calories=weekly_calories,
             weekly_duration_fmt=weekly_duration_fmt,
-            # daily log state
+          
             pre_submitted=(daily_log.pre_submitted if daily_log else False),
             post_submitted=(daily_log.post_submitted if daily_log else False),
-            # water + steps
+           
             water_today=water_today,
             steps_today=steps_today,
-            # feedback
+           
             session_feedback=session_feedback,
-            # prefill data for modals (if already submitted, show saved values)
+          
             daily_log=daily_log,
             today=today,
         )
 
-    # ─── Daily Quote API ───────────────────────────────────────────────────────
 
     @app.route("/api/daily-quote")
     @login_required
@@ -759,7 +715,6 @@ Now write the personalised coaching feedback paragraph:"""
             chosen = get_daily_quote()
         return jsonify({"quote": chosen["quote"], "author": chosen["author"]})
 
-    # ─── Pre-Workout API ───────────────────────────────────────────────────────
 
     @app.route("/api/pre-modal", methods=["POST"])
     @login_required
@@ -768,14 +723,14 @@ Now write the personalised coaching feedback paragraph:"""
         today_str = get_today().isoformat()
         uid = current_user.uid
 
-        # Water-only quick update (from glass buttons) — always allowed
+        
         if data.get('_water_only'):
             log = _get_or_create_daily_log(uid, today_str)
             log.pre_water_intake = _int(data.get('water_intake'), log.pre_water_intake or 0)
             db.session.commit()
             return jsonify({"status": "ok", "water_today": log.pre_water_intake})
 
-        # Only allow 1 full pre-workout per day
+
         existing = DailyLog.query.filter_by(uid=uid, log_date=today_str).first()
         if existing and existing.pre_submitted:
             return jsonify({"status": "already_submitted", "message": "Pre-workout already logged for today."})
@@ -797,7 +752,7 @@ Now write the personalised coaching feedback paragraph:"""
             "water_today": log.pre_water_intake or 0
         })
 
-    # ─── Post-Workout API ──────────────────────────────────────────────────────
+
 
     @app.route("/api/post-modal", methods=["POST"])
     @login_required
@@ -806,7 +761,6 @@ Now write the personalised coaching feedback paragraph:"""
         today_str = get_today().isoformat()
         uid = current_user.uid
 
-        # Only allow 1 post-workout per day
         existing = DailyLog.query.filter_by(uid=uid, log_date=today_str).first()
         if existing and existing.post_submitted:
             return jsonify({"status": "already_submitted", "message": "Post-workout already logged for today."})
@@ -821,15 +775,15 @@ Now write the personalised coaching feedback paragraph:"""
 
         db.session.flush()
 
-        # Update streak
+
         _update_streak(uid, today_str)
 
-        # Generate session feedback (needs pre + post data)
+    
         personal = current_user.personal
         feedback = _generate_session_feedback(log, personal)
         log.llm_feedback = feedback
 
-        # Re-generate consistency score
+       
         score, consistency_feedback = _generate_consistency_score(uid)
 
         db.session.commit()
@@ -844,7 +798,7 @@ Now write the personalised coaching feedback paragraph:"""
             "consistency_feedback": consistency_feedback
         })
 
-    # ─── Step Count API ────────────────────────────────────────────────────────
+
 
     @app.route("/api/steps", methods=["POST"])
     @login_required
@@ -859,7 +813,6 @@ Now write the personalised coaching feedback paragraph:"""
         db.session.commit()
         return jsonify({"status": "ok", "steps": steps})
 
-    # ─── Workout Set Toggle API ────────────────────────────────────────────────
 
     @app.route("/api/workout-set", methods=["POST"])
     @login_required
@@ -894,7 +847,7 @@ Now write the personalised coaching feedback paragraph:"""
         db.session.commit()
         return jsonify({"status": "ok", "completed": completed})
 
-    # ─── Chatbot ───────────────────────────────────────────────────────────────
+
 
     @app.route('/chatbot-api', methods=['POST'])
     @login_required
@@ -906,7 +859,7 @@ Now write the personalised coaching feedback paragraph:"""
             return jsonify({"reply": "I couldn't read the page content. Please refresh and try again."})
 
         prompt = f"""
-        You are a helpful gym assistant for GymBhai website.
+        You are a helpful gym assistant for GymTracker website.
         Answer ONLY using this page content:
         {context}
 
@@ -924,7 +877,6 @@ Now write the personalised coaching feedback paragraph:"""
         )
         return jsonify({"reply": completion.choices[0].message.content})
 
-    # ─── Page Routes ───────────────────────────────────────────────────────────
 
     @app.route("/home/profile")
     @login_required
@@ -954,7 +906,70 @@ Now write the personalised coaching feedback paragraph:"""
     @app.route("/home/nutrition")
     @login_required
     def nutrition():
-        return render_template("nutrition.html", show_chatbot=True)
+        personal = current_user.personal
+
+     
+        user_gender = (personal.gender if personal else None) or ""
+        user_goal   = (personal.goal   if personal else None) or ""
+
+        bmi_category = ""
+        if personal and personal.weight and personal.height:
+            bmi = personal.weight / ((personal.height / 100) ** 2)
+            if bmi < 18.5:
+                bmi_category = "Underweight"
+            elif bmi < 25:
+                bmi_category = "Normal weight"
+            elif bmi < 30:
+                bmi_category = "Overweight"
+            else:
+                bmi_category = "Obesity"
+
+        return render_template(
+            "nutrition.html",
+            show_chatbot=True,
+            user_gender=user_gender,
+            user_goal=user_goal,
+            bmi_category=bmi_category,
+            genders=["Male", "Female"],
+            goals=["muscle_gain", "fat_burn"],
+            bmi_categories=["Underweight", "Normal weight", "Overweight", "Obesity"],
+            exercise_schedules=[
+                "Light weightlifting, Yoga, and 2000 steps walking",
+                "Moderate cardio, Strength training, and 5000 steps walking",
+                "High-intensity interval training (HIIT), Cardio, and 8000 steps walking",
+                "Low-impact cardio, Swimming, and 10000 steps walking",
+            ],
+        )
+
+
+    @app.route("/api/predict-meal-plan", methods=["POST"])
+    @login_required
+    def api_predict_meal_plan():
+        data = request.get_json(silent=True) or {}
+
+        gender            = _str(data.get("gender"))
+        goal              = _str(data.get("goal"))
+        bmi_category      = _str(data.get("bmi_category"))
+        exercise_schedule = _str(data.get("exercise_schedule"))
+
+        if not all([gender, goal, bmi_category, exercise_schedule]):
+            return jsonify({"status": "error", "message": "All fields are required."}), 400
+
+        try:
+            import pandas as pd
+            input_df = pd.DataFrame([{
+                "gender":            gender,
+                "goal":              goal,
+                "bmi_category":      bmi_category,
+                "exercise_schedule": exercise_schedule,
+            }])
+            pred_encoded = meal_model.predict(input_df)[0]
+            exercise_plan = le_exercise.inverse_transform([pred_encoded[0]])[0] if le_exercise else pred_encoded[0]
+            meal_plan     = le_meal.inverse_transform([pred_encoded[1]])[0] if le_meal else pred_encoded[1]
+            return jsonify({"status": "ok", "meal_plan": str(meal_plan), "exercise_plan": str(exercise_plan)})
+        except Exception as e:
+            print("[MealPlan prediction error]", e)
+            return jsonify({"status": "error", "message": "Prediction failed. Please try again."}), 50
 
     @app.route("/home/progress")
     @login_required
@@ -963,7 +978,7 @@ Now write the personalised coaching feedback paragraph:"""
         personal = current_user.personal
         today    = get_today()
 
-        # ── All-time logs ──────────────────────────────────────────────────
+       
         all_logs = DailyLog.query.filter_by(uid=uid).order_by(DailyLog.log_date.desc()).all()
         post_logs = [l for l in all_logs if l.post_submitted]
 
@@ -971,7 +986,6 @@ Now write the personalised coaching feedback paragraph:"""
             vals = [v for v in vals if v is not None]
             return round(sum(vals) / len(vals), 1) if vals else 0
 
-        # ── Snapshot totals ────────────────────────────────────────────────
         total_sessions   = len(post_logs)
         total_calories   = sum(l.post_calories or 0 for l in post_logs)
         total_duration   = sum(l.post_duration or 0 for l in post_logs)
@@ -982,7 +996,7 @@ Now write the personalised coaching feedback paragraph:"""
         avg_water_val  = _avg([l.pre_water_intake for l in all_logs if l.pre_submitted])
         avg_water_fmt  = f"{avg_water_val}/12" if avg_water_val else "—"
 
-        # ── Session averages ───────────────────────────────────────────────
+        
         avg_duration = int(_avg([l.post_duration for l in post_logs]))
         avg_calories = int(_avg([l.post_calories for l in post_logs]))
         avg_rating   = _avg([l.post_rating   for l in post_logs])
@@ -992,27 +1006,26 @@ Now write the personalised coaching feedback paragraph:"""
         avg_steps    = int(_avg([l.steps for l in all_logs if l.steps]))
         avg_water    = _avg([l.pre_water_intake for l in post_logs if l.pre_water_intake])
 
-        # ── 30-day consistency ─────────────────────────────────────────────
-        thirty_ago = today - timedelta(days=30)          # date object, not string
+    
+        thirty_ago = today - timedelta(days=30)          
         month_logs = [l for l in all_logs if l.log_date >= thirty_ago]
         sessions_this_month = sum(1 for l in month_logs if l.post_submitted)
         missed_days = max(0, 30 - sessions_this_month - sum(
             1 for l in month_logs if not l.post_submitted and not l.pre_submitted
         ))
 
-        # ── Weight progress % (how far from start toward goal) ────────────
+        
         weight_progress_pct = 0
         if personal and personal.weight and personal.goal_weight:
-            # We don't have a start_weight field so we use a simple % of goal reached
-            # positive = need to lose, negative = need to gain
+            
             diff_total = abs((personal.weight or 0) - (personal.goal_weight or 0))
-            # pct of goal achieved: clamp 0-100
+            
             if diff_total == 0:
                 weight_progress_pct = 100
             else:
                 weight_progress_pct = min(100, max(0, int((1 - diff_total / max(personal.weight, personal.goal_weight, 1)) * 100)))
 
-        # ── Mood distribution ──────────────────────────────────────────────
+       
         MOOD_COLORS = {
             "energetic": "#22c55e",
             "happy":     "#fbbf24",
@@ -1034,7 +1047,7 @@ Now write the personalised coaching feedback paragraph:"""
                 "color": MOOD_COLORS.get(mood, "#555"),
             })
 
-        # ── Workout type breakdown ─────────────────────────────────────────
+       
         WTYPE_COLORS = [
             "var(--accent)", "#3b82f6", "#22c55e",
             "#a855f7", "#fbbf24", "#fb7185",
@@ -1053,7 +1066,7 @@ Now write the personalised coaching feedback paragraph:"""
                 "color": WTYPE_COLORS[idx % len(WTYPE_COLORS)],
             })
 
-        # ── 30-day heatmap ─────────────────────────────────────────────────
+        
         logs_by_date = {l.log_date: l for l in all_logs}  # keys are date objects
         level = (personal.level if personal else None) or "beginner"
         heatmap_data = []
@@ -1075,76 +1088,70 @@ Now write the personalised coaching feedback paragraph:"""
                 "rating": log.post_rating if log and log.post_submitted else None,
             })
 
-        # ── Recent sessions list ───────────────────────────────────────────
+        
         DAY_NAMES = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
         recent_sessions = []
         for l in post_logs[:15]:
-            d = l.log_date          # already a datetime.date — no conversion needed
+            d = l.log_date
             recent_sessions.append({
                 "day_name":    DAY_NAMES[d.weekday()],
                 "date_fmt":    d.strftime("%d %b"),
-                "workout_type":l.pre_workout_type,
+                "workout_type": l.pre_workout_type,
                 "duration":    l.post_duration,
                 "calories":    l.post_calories,
                 "rating":      l.post_rating,
                 "fatigue":     l.post_fatigue,
                 "completion":  l.post_completion,
             })
-            today = get_today()
-            week_dates = [(today - timedelta(days=i)) for i in range(6, -1, -1)]
 
-            logs = DailyLog.query.filter(
-                DailyLog.uid == current_user.uid,
-                DailyLog.log_date >= week_dates[0],
-                DailyLog.log_date <= week_dates[-1]
-            ).all()
+        
+        today = get_today()
+        week_dates = [(today - timedelta(days=i)) for i in range(6, -1, -1)]
+        week_logs = DailyLog.query.filter(
+            DailyLog.uid == current_user.uid,
+            DailyLog.log_date >= week_dates[0],
+            DailyLog.log_date <= week_dates[-1]
+        ).all()
+        log_map = {l.log_date: l for l in week_logs}
+        week_data = []
+        for d in week_dates:
+            log = log_map.get(d)
+            status = "missed"
+            if log:
+                if log.post_submitted:
+                    status = "active"
+                elif log.pre_submitted:
+                    status = "partial"
+                else:
+                    status = "rest"
+            week_data.append({
+                "date":   d.strftime("%Y-%m-%d"),
+                "day":    d.strftime("%a"),
+                "num":    d.day,
+                "status": status,
+            })
 
-            log_map = {l.log_date: l for l in logs}
-
-            week_data = []
-
-            for d in week_dates:
-                log = log_map.get(d)
-
-                status = "missed"
-                if log:
-                    if log.post_submitted:
-                        status = "active"
-                    elif log.pre_submitted:
-                        status = "partial"
-                    else:
-                        status = "rest"
-
-                week_data.append({
-                    "date": d.strftime("%Y-%m-%d"),
-                    "day": d.strftime("%a"),
-                    "num": d.day,
-                    "status": status
-                })
-                calendar_logs = DailyLog.query.filter_by(uid=current_user.uid).all()
-
-                calendar_data = {}
-
-                for log in calendar_logs:
-                    key = log.log_date.strftime("%Y-%m-%d")
-
-                    if log.post_submitted:
-                        calendar_data[key] = "active"
-                    elif log.pre_submitted:
-                        calendar_data[key] = "partial"
-                    else:
-                        calendar_data[key] = "missed"
-
+        
+        calendar_logs = DailyLog.query.filter_by(uid=current_user.uid).all()
+        calendar_data = {}
+        for log in calendar_logs:
+            key = log.log_date.strftime("%Y-%m-%d")
+            if log.post_submitted:
+                calendar_data[key] = "active"
+            elif log.pre_submitted:
+                calendar_data[key] = "partial"
+            else:
+                calendar_data[key] = "missed"
         return render_template(
             "progress.html",
             show_chatbot=True,
             personal=personal,
-            # snapshot
+         
             total_sessions=total_sessions,
             total_calories=total_calories,
             total_duration_fmt=total_duration_fmt,
             avg_water_fmt=avg_water_fmt,
-            # averages
+            
             avg_duration=avg_duration,
             avg_calories=avg_calories,
             avg_rating=avg_rating,
@@ -1153,17 +1160,17 @@ Now write the personalised coaching feedback paragraph:"""
             avg_sleep=avg_sleep,
             avg_steps=avg_steps,
             avg_water=avg_water,
-            # consistency
+            
             sessions_this_month=sessions_this_month,
             missed_days=missed_days,
-            # body
+            
             weight_progress_pct=weight_progress_pct,
-            # breakdowns
+            
             mood_data=mood_data,
             workout_type_data=workout_type_data,
-            # heatmap
+            
             heatmap_data=heatmap_data,
-            # recent sessions
+           
             recent_sessions=recent_sessions,
             week_data=week_data,
             calendar_data=calendar_data
@@ -1174,8 +1181,7 @@ Now write the personalised coaching feedback paragraph:"""
     def secert():
         return 'secret message ;>'
 
-    # ─── Profile Save ──────────────────────────────────────────────────────────
-
+    
     @app.route('/profile/save', methods=['POST'])
     @login_required
     def profile_save():
@@ -1270,22 +1276,35 @@ Now write the personalised coaching feedback paragraph:"""
             db.session.rollback()
             return jsonify(success=False, error=str(e)), 500
 
-    # ─── Reset Progress ────────────────────────────────────────────────────────
+   
 
     @app.route('/profile/reset-progress', methods=['POST'])
     @login_required
     def reset_progress():
         try:
+            uid = current_user.uid
+
+           
+            DailyLog.query.filter_by(uid=uid).delete()
+            WorkoutLog.query.filter_by(uid=uid).delete()
+
+           
             personal = current_user.personal
             if personal:
-                personal.streak = 0
+                personal.streak               = 0
+                personal.best_streak          = 0
+                personal.consistency_score    = 0
+                personal.consistency_feedback = None
+                personal.score_updated_date   = None
+
             db.session.commit()
             return jsonify(success=True)
+
         except Exception as e:
             db.session.rollback()
             return jsonify(success=False, error=str(e)), 500
 
-    # ─── Delete Account ────────────────────────────────────────────────────────
+   
 
     @app.route('/profile/delete-account', methods=['POST'])
     @login_required

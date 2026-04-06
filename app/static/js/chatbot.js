@@ -1,7 +1,3 @@
-/* ═══════════════════════════════════════════
-   GYMBHAI — chatbot.js
-   Chatbot widget: toggle, send, API calls
-   ═══════════════════════════════════════════ */
 
 (function () {
     const btn = document.getElementById('chatbot-btn');
@@ -15,11 +11,10 @@
     let isOpen = false;
     let isLoading = false;
 
-    /* ── Message helpers ─────────────────────── */
     function addBotMessage(html) {
         const bubble = document.createElement('div');
         bubble.className = 'chat-bubble bot';
-        bubble.innerHTML = '<div class="bubble-label">GymBhai AI</div>' + html;
+        bubble.innerHTML = '<div class="bubble-label">GymTracker AI</div>' + html;
         messages.appendChild(bubble);
         messages.scrollTop = messages.scrollHeight;
     }
@@ -50,23 +45,20 @@
         const main = document.querySelector('.main');
         return main ? main.innerText.trim() : document.body.innerText.trim();
     }
-
-    /* ── Toggle panel ────────────────────────── */
     btn.addEventListener('click', function () {
         isOpen = !isOpen;
         btn.classList.toggle('open', isOpen);
         panel.classList.toggle('open', isOpen);
 
         if (isOpen && messages.children.length === 0) {
-            const pageName = document.title.replace('Gym Bhai —', '').trim();
+            const pageName = document.title.replace('Gym Tracker —', '').trim();
             addBotMessage(
-                'Hey! I\'m your <strong>GymBhai AI</strong> assistant.<br>' +
+                'Hey! I\'m your <strong>GymTracker AI</strong> assistant.<br>' +
                 'I can answer questions about the <strong>' + pageName + '</strong> page. What would you like to know?'
             );
         }
     });
 
-    /* ── Send message ────────────────────────── */
     function sendMessage() {
         const text = input.value.trim();
         if (!text || isLoading) return;

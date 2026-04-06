@@ -4,12 +4,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Gym Bhai{% endblock %}</title>
+    <title>{% block title %}Gym Tracker{% endblock %}</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@300;400;600&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="stylesheet" href="/css/base.css" />
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -17,58 +16,41 @@
 
 <body>
 
-    <!-- ── NAV ── -->
     <nav>
         <div class="nav-left">
-            <button id="menu-btn" title="Toggle Menu">
-                <span></span>
-                <span></span>
-                <span></span>
+            <button id="menu-btn">
+                <span></span><span></span><span></span>
             </button>
             <a href="{{ url_for('home') }}" class="home-btn">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
                     <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" />
                     <path d="M9 21V12h6v9" />
                 </svg>
                 Home
             </a>
-            <span class="nav-logo">Gym<span>Bhai</span></span>
+            <span class="nav-logo">Gym<span>Tracker</span></span>
         </div>
-
-        <!-- Spacer pushes right section to the far right -->
         <div class="nav-spacer"></div>
-
-        <!-- Nav right: streak + username link + avatar dropdown -->
         <div class="nav-right">
-            <!-- Streak badge — count pulled from JS (data-attribute hook) -->
-            <div class="nav-streak" title="Current Streak">
-
-                <span id="streak-count"
-                    data-streak="{{ current_user.personal.streak if current_user.personal and current_user.personal.streak is defined else 0 }}">0</span>
+            <div class="nav-streak">
+                <strong id="streak-count"
+                    data-streak="{{ current_user.personal.streak if current_user.personal and current_user.personal.streak is defined else 0 }}">0</strong>
                 <span class="streak-label">day streak</span>
             </div>
-
             <a href="{{ url_for('profile') }}" class="nav-username">{{ current_user.name }}</a>
-
             <div class="avatar-wrapper" id="avatarWrapper">
-                <div class="nav-avatar" id="avatarBtn" title="View Profile">
-                    {{ current_user.name[0] | upper }}
-                </div>
-
-                <!-- Dropdown — positioned via CSS relative to .avatar-wrapper -->
+                <div class="nav-avatar" id="avatarBtn">{{ current_user.name[0]|upper }}</div>
                 <div class="dropdown" id="dropdown">
                     <div class="dropdown-header">
                         <div class="dh-name">{{ current_user.name }}</div>
                         <div class="dh-email">{{ current_user.email }}</div>
                         {% if current_user.personal %}
-                        <div class="dh-meta">
-                            {{ current_user.personal.level | capitalize }} ·
-                            {{ current_user.personal.gender | capitalize }}
-                        </div>
+                        <div class="dh-meta">{{ current_user.personal.level|capitalize }} · {{
+                            current_user.personal.gender|capitalize }}</div>
                         {% endif %}
                     </div>
                     <a href="{{ url_for('profile') }}">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <circle cx="12" cy="8" r="4" />
                             <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
@@ -76,7 +58,7 @@
                         Profile
                     </a>
                     <a href="{{ url_for('logout') }}" class="logout">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2">
                             <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
                             <polyline points="16 17 21 12 16 7" />
@@ -89,142 +71,96 @@
         </div>
     </nav>
 
-    <!-- ── SIDEBAR ── -->
     <aside id="sidebar">
         <a href="{{ url_for('profile') }}" class="sb-item {% block sb_profile %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <circle cx="12" cy="8" r="4" />
                     <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-                </svg>
-            </span>
+                </svg></span>
             <span class="sb-label">Profile</span>
         </a>
         <a href="{{ url_for('arms_shoulder') }}" class="sb-item {% block sb_arms %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <rect x="2" y="10" width="3" height="4" rx="1" />
                     <rect x="19" y="10" width="3" height="4" rx="1" />
                     <rect x="5" y="8" width="3" height="8" rx="1" />
                     <rect x="16" y="8" width="3" height="8" rx="1" />
                     <line x1="8" y1="12" x2="16" y2="12" stroke-width="2.5" />
-                </svg>
-            </span>
-            <span class="sb-label">Arms &amp; Shoulder</span>
+                </svg></span>
+            <span class="sb-label">Arms & Shoulder</span>
         </a>
         <a href="{{ url_for('legs_glutes') }}" class="sb-item {% block sb_legs %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <circle cx="12" cy="4" r="2" />
                     <path d="M12 6v5l-3 5h6" />
                     <path d="M9 16l-2 5" />
                     <path d="M15 16l2 5" />
-                </svg>
-            </span>
-            <span class="sb-label">Legs &amp; Glutes</span>
+                </svg></span>
+            <span class="sb-label">Legs & Glutes</span>
         </a>
         <a href="{{ url_for('abs_core') }}" class="sb-item {% block sb_abs %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <rect x="4" y="4" width="6" height="7" rx="1" />
                     <rect x="14" y="4" width="6" height="7" rx="1" />
                     <rect x="4" y="14" width="6" height="6" rx="1" />
                     <rect x="14" y="14" width="6" height="6" rx="1" />
-                </svg>
-            </span>
-            <span class="sb-label">Abs &amp; Core</span>
+                </svg></span>
+            <span class="sb-label">Abs & Core</span>
         </a>
         <a href="{{ url_for('cardio_hit') }}" class="sb-item {% block sb_cardio %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <polyline points="3 12 6 12 9 5 12 19 15 9 18 12 21 12" />
-                </svg>
-            </span>
-            <span class="sb-label">Cardio and HIT</span>
+                </svg></span>
+            <span class="sb-label">Cardio & HIIT</span>
         </a>
         <a href="{{ url_for('progress') }}" class="sb-item {% block sb_progress %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <rect x="3" y="14" width="3" height="6" rx="1" />
                     <rect x="9" y="9" width="3" height="11" rx="1" />
                     <rect x="15" y="4" width="3" height="16" rx="1" />
-                    <line x1="2" y1="20" x2="22" y2="20" stroke-linecap="round" />
-                </svg>
-            </span>
+                </svg></span>
             <span class="sb-label">Progress</span>
         </a>
         <a href="{{ url_for('nutrition') }}" class="sb-item {% block sb_nutrition %}{% endblock %}">
-            <span class="sb-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <span class="sb-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="1.8">
                     <path d="M12 2C8 2 4 6 4 10c0 3.5 2.5 6.5 6 7.7V21h4v-3.3c3.5-1.2 6-4.2 6-7.7 0-4-4-8-8-8z" />
                     <line x1="12" y1="10" x2="12" y2="21" />
-                    <path d="M9 8c0 0 1 3 3 3s3-3 3-3" />
-                </svg>
-            </span>
+                </svg></span>
             <span class="sb-label">Nutrition</span>
         </a>
     </aside>
 
-    <!-- ── MAIN CONTENT ── -->
     <main class="main">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- ── SHARED JS ── -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-
+    <script src="/js/main.js"></script>
     {% if show_chatbot %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/chatbot.css') }}" />
-    <script src="{{ url_for('static', filename='js/chatbot.js') }}" defer></script>
-    <button id="chatbot-btn" title="Ask AI Assistant">
-        <svg class="icon-chat" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"
-            viewBox="0 0 24 24">
+    <link rel="stylesheet" href="/css/chatbot.css" />
+    <button id="chatbot-btn">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
             <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
-        </svg>
-        <svg class="icon-close" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"
-            viewBox="0 0 24 24">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
     </button>
     <div id="chatbot-panel">
-        <div class="chat-header">
-            <div class="chat-header-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                    <line x1="9" y1="9" x2="9.01" y2="9" stroke-width="3" stroke-linecap="round" />
-                    <line x1="15" y1="9" x2="15.01" y2="9" stroke-width="3" stroke-linecap="round" />
-                </svg>
-            </div>
-            <div class="chat-header-text">
-                <div class="chat-header-title">GymBhai AI</div>
-                <div class="chat-header-sub">Page-aware assistant</div>
-            </div>
-        </div>
+        <div class="chat-header"><strong>GymTracker AI</strong><span>Page-aware assistant</span></div>
         <div id="chat-messages"></div>
         <div class="chat-input-area">
             <input type="text" id="chat-input" placeholder="Ask about this page…" autocomplete="off" />
-            <button id="chat-send-btn">
-                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <line x1="22" y1="2" x2="11" y2="13" />
-                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                </svg>
-            </button>
+            <button id="chat-send-btn">→</button>
         </div>
     </div>
+    <script src="/js/chatbot.js" defer></script>
     {% endif %}
 
     {% block extra_js %}{% endblock %}
-
-    <script>
-        // Populate streak from data attribute (avoids hardcoding)
-        const streakEl = document.getElementById('streak-count');
-        if (streakEl) {
-            const val = parseInt(streakEl.dataset.streak, 10);
-            streakEl.textContent = isNaN(val) ? 0 : val;
-        }
-    </script>
 
 </body>
 
@@ -232,21 +168,20 @@
 
 <body>
     <div
-        style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Barlow',sans-serif;background:#1a1a1a;color:#fff;gap:16px;">
-        <div style="font-size:64px;font-weight:800;color:#d94f2b;">401</div>
-        <div style="font-size:20px;font-weight:600;">Unauthorized Access</div>
-        <div style="font-size:14px;color:#888;margin-bottom:8px;">You must be logged in to view this page.</div>
-        <div style="display:flex;gap:12px;">
+        style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Barlow',sans-serif;background:#1a1a1a;color:#fff;gap:16px;text-align:center;">
+        <div style="font-size:60px;font-weight:900;color:#d94f2b;">401</div>
+        <div style="font-size:18px;font-weight:600;">Unauthorized</div>
+        <div style="font-size:13px;color:#777;">You must be logged in to view this page.</div>
+        <div style="display:flex;gap:12px;margin-top:8px;">
             <a href="{{ url_for('login') }}"
-                style="padding:10px 24px;background:#d94f2b;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Log
+                style="padding:10px 22px;background:#d94f2b;color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Log
                 In</a>
             <a href="{{ url_for('signup') }}"
-                style="padding:10px 24px;background:rgba(255,255,255,0.08);color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Sign
+                style="padding:10px 22px;background:rgba(255,255,255,0.08);color:#fff;border-radius:6px;text-decoration:none;font-weight:600;">Sign
                 Up</a>
         </div>
     </div>
 </body>
-
 {% endif %}
 
 </html>

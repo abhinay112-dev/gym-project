@@ -1,39 +1,98 @@
 {% extends "base.html" %}
-{% block title %}Gym Bhai — Abs & Core{% endblock %}
-{% block sb_arms %}active{% endblock %}
+{% block title %}Gym Tracker — Abs & Core{% endblock %}
+{% block sb_abs %}active{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/blog.css') }}">
+{% endblock %}
 
 {% block content %}
+
 <div id="progressBar"></div>
 
-<style>
-    #progressBar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 6px;
-        width: 0%;
-        background: linear-gradient(to right, #7e0707, #ff2b00);
-        z-index: 9999;
-        transition: width 0.2s ease;
-    }
-</style>
-
-
 <div>
-    <h1>
-        This page is about abs and core
-    </h1>
+    <h1>Abs & Core</h1>
+    <p>A strong core is not just about aesthetics — it's essential for posture, injury prevention, and overall athletic
+        performance. These exercises target your entire core, from the rectus abdominis to the deep stabilizing muscles.
+    </p>
+
+    <hr>
+
+    <h2>1. Plank</h2>
+    <p>The plank is a foundational isometric core exercise. Get into a push-up position and hold with your forearms on
+        the ground, body forming a straight line from head to heels. Brace your core and squeeze your glutes. Start with
+        3 holds of 30–60 seconds and work your way up over time.</p>
+    <p><strong>Muscles worked:</strong> Transverse abdominis, Rectus abdominis, Obliques, Glutes, Shoulder stabilizers
+    </p>
+    <a href="https://www.youtube.com/watch?v=pSHjTRCQxIw" target="_blank" title="Watch Plank on YouTube">
+        <img src="https://img.youtube.com/vi/pSHjTRCQxIw/hqdefault.jpg" alt="Plank Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>2. Cable Crunch</h2>
+    <p>The cable crunch is one of the best-loaded exercises for the rectus abdominis. Kneel in front of a cable machine,
+        hold the rope attachment behind your head, and crunch downward by flexing your spine — not just pulling with
+        your arms. Squeeze your abs at the bottom. Do 3–4 sets of 12–15 reps.</p>
+    <p><strong>Muscles worked:</strong> Rectus abdominis, Obliques</p>
+    <a href="https://www.youtube.com/watch?v=2fbujeH3F0E" target="_blank" title="Watch Cable Crunch on YouTube">
+        <img src="https://img.youtube.com/vi/2fbujeH3F0E/hqdefault.jpg" alt="Cable Crunch Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>3. Hanging Leg Raises</h2>
+    <p>Hanging leg raises are excellent for targeting the lower abs and hip flexors. Hang from a pull-up bar and raise
+        your legs until they are parallel to the floor (or higher for more challenge). Lower them slowly without
+        swinging. Perform 3 sets of 10–15 reps. Bend your knees if straight legs are too difficult at first.</p>
+    <p><strong>Muscles worked:</strong> Lower rectus abdominis, Hip flexors, Obliques</p>
+    <a href="https://www.youtube.com/watch?v=Pr1ieGZ5atk" target="_blank" title="Watch Hanging Leg Raises on YouTube">
+        <img src="https://img.youtube.com/vi/Pr1ieGZ5atk/hqdefault.jpg" alt="Hanging Leg Raises Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>4. Russian Twists</h2>
+    <p>Russian twists develop rotational strength in the obliques. Sit on the floor, lean back slightly, and lift your
+        feet off the ground. Rotate your torso from side to side, touching the floor (or a weight) next to each hip. For
+        added difficulty, hold a plate or medicine ball. Do 3 sets of 20 total reps (10 per side).</p>
+    <p><strong>Muscles worked:</strong> Obliques, Rectus abdominis, Hip flexors</p>
+    <a href="https://www.youtube.com/watch?v=wkD8rjkodUI" target="_blank" title="Watch Russian Twists on YouTube">
+        <img src="https://img.youtube.com/vi/wkD8rjkodUI/hqdefault.jpg" alt="Russian Twists Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>5. Ab Wheel Rollout</h2>
+    <p>The ab wheel rollout is one of the most challenging core exercises. Kneel on the floor, hold the ab wheel with
+        both hands, and slowly roll forward as far as you can while keeping your core tight and back flat. Pull back
+        using your core to return. Start with short range rollouts and progress over time. Aim for 3 sets of 8–10 reps.
+    </p>
+    <p><strong>Muscles worked:</strong> Rectus abdominis, Transverse abdominis, Lats, Shoulder stabilizers</p>
+    <a href="https://www.youtube.com/watch?v=vncVOEtMhpk" target="_blank" title="Watch Ab Wheel Rollout on YouTube">
+        <img src=https://i.ytimg.com/vi/rqiTPdK1c_I/hq720.jpg?sqp=-oaymwEnCNAFEJQDSFryq4qpAxkIARUAAIhCGAHYAQHiAQoIGBACGAY4AUAB&rs=AOn4CLCYifHuvz-YFFQEk3PCKbrNcbMx5w
+            alt="Ab Wheel Rollout Tutorial"
+            style="width:360px; height:200px; display:block; margin:10px 0; cursor:pointer; border:2px solid #ccc;">
+    </a>
+
+    <hr>
+
+    <h2>Tips for Abs & Core Training</h2>
+    <ul>
+        <li>Abs are made in the kitchen — diet and low body fat are key to visible abs.</li>
+        <li>Train your core 3–4 times per week; it recovers faster than most muscle groups.</li>
+        <li>Include both flexion exercises (crunches) and anti-flexion/stability exercises (planks, rollouts).</li>
+        <li>Don't neglect the obliques — side planks and twisting movements are essential.</li>
+        <li>Quality over quantity — slow, controlled reps beat fast, sloppy ones every time.</li>
+    </ul>
 </div>
 
+{% endblock %}
 
-<script>
-    window.addEventListener("scroll", function () {
-        let scrollTop = document.documentElement.scrollTop;
-        let scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        let progress = (scrollTop / scrollHeight) * 100;
-
-        document.getElementById("progressBar").style.width = progress + "%";
-    });
-</script>
-
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/blog.js') }}"></script>
 {% endblock %}

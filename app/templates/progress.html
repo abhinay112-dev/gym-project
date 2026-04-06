@@ -1,329 +1,221 @@
 {% extends "base.html" %}
-{% block title %}Gym Bhai — Progress{% endblock %}
+{% block title %}Gym Tracker — Progress{% endblock %}
 {% block sb_progress %}active{% endblock %}
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}" />
-<link rel="stylesheet" href="{{ url_for('static', filename='css/progress.css') }}" />
-{% endblock %}
+<link rel="stylesheet" href="/css/progress.css" />{% endblock %}
 
 {% block content %}
 
-<!-- ── Hero ─────────────────────────────────── -->
 <div class="hero-card">
-    <div class="hero-text">
-        <h2>Your <span>Progress</span></h2>
-        {% if personal and personal.goal %}
-        <p>Tracking your journey toward <strong>{{ personal.goal }}</strong>. Here's everything your data says about how
-            far you've come.</p>
-        {% else %}
-        <p>Here's a full breakdown of your training history, habits, and physical stats — all from your actual logged
-            data.</p>
-        {% endif %}
-    </div>
+    <h2>Your <span>Progress</span></h2>
+    <p>
+        {% if personal and personal.goal %}Tracking your journey toward <strong>{{ personal.goal }}</strong>.{% else
+        %}Full breakdown of your training history, habits, and stats.{% endif %}
+    </p>
 </div>
 
-<!-- ── Snapshot Stats Row ─────────────────── -->
 <div class="section-heading">At a Glance</div>
 <div class="snapshot-grid">
-
     <div class="snap-card">
         <div class="snap-val">{{ total_sessions }}</div>
         <div class="snap-label">Total Sessions</div>
     </div>
-
     <div class="snap-card">
         <div class="snap-val">{{ personal.streak if personal else 0 }}</div>
         <div class="snap-label">Current Streak</div>
     </div>
-
     <div class="snap-card">
         <div class="snap-val">{{ personal.best_streak if personal else 0 }}</div>
         <div class="snap-label">Best Streak</div>
     </div>
-
     <div class="snap-card">
         <div class="snap-val">{{ total_duration_fmt }}</div>
-        <div class="snap-label">Total Time Trained</div>
+        <div class="snap-label">Total Time</div>
     </div>
-
     <div class="snap-card">
         <div class="snap-val">{{ total_calories }}</div>
-        <div class="snap-label">Total Calories Burned</div>
+        <div class="snap-label">Calories Burned</div>
     </div>
-
     <div class="snap-card">
         <div class="snap-val">{{ avg_water_fmt }}</div>
-        <div class="snap-label">Avg Water / Day</div>
+        <div class="snap-label">Avg Water/Day</div>
     </div>
-
 </div>
 
-<!-- ── Consistency + Body Stats ──────────── -->
-<div class="section-heading">Consistency & Profile</div>
+
+<div class="section-heading">Consistency & Body</div>
 <div class="stats-grid">
 
-    <!-- Consistency Score (reused from home) -->
-    <div class="consistency-card">
-        <div class="stat-card-title">
-            Consistency Score
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Consistency Score</div>
         </div>
-        <div class="consistency-score-wrap">
-            <div class="score-circle">
-                <div class="score-label">
-                    <span class="score-num" data-score="{{ personal.consistency_score if personal else 0 }}">0</span>
-                    <span class="score-pct">/ 100</span>
+        <div class="card-body">
+            <div class="score-row">
+                <div class="score-big" data-score="{{ personal.consistency_score if personal else 0 }}">0</div>
+                <div class="score-meta">
+                    <div class="cstat-row"><span>Sessions (30 days)</span><span>{{ sessions_this_month }}</span></div>
+                    <div class="cstat-row"><span>Current Streak</span><span>{{ personal.streak if personal else 0 }}
+                            days</span></div>
+                    <div class="cstat-row"><span>Best Streak</span><span>{{ personal.best_streak if personal else 0 }}
+                            days</span></div>
+                    <div class="cstat-row"><span style="color:#ef4444">Missed Days</span><span style="color:#ef4444">{{
+                            missed_days }}</span></div>
                 </div>
             </div>
-            <div class="consistency-stats">
-                <div class="cstat-row">
-                    <span class="cstat-label">Sessions (30 days)</span>
-                    <span class="cstat-val">{{ sessions_this_month }}</span>
-                </div>
-                <div class="cstat-row">
-                    <span class="cstat-label">Current Streak</span>
-                    <span class="cstat-val">{{ personal.streak if personal else 0 }} days</span>
-                </div>
-                <div class="cstat-row">
-                    <span class="cstat-label">Best Streak</span>
-                    <span class="cstat-val">{{ personal.best_streak if personal else 0 }} days</span>
-                </div>
-                <div class="cstat-row">
-                    <span class="cstat-label">Missed Days</span>
-                    <span class="cstat-val" style="color:#ef4444">{{ missed_days }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="consistency-bar-wrap">
-            <div class="cbar-label">
-                <span>Monthly goal progress</span>
-                <span>{{ personal.consistency_score if personal else 0 }}%</span>
-            </div>
+            <div class="cbar-label"><span>Monthly goal progress</span><span>{{ personal.consistency_score if personal
+                    else 0 }}%</span></div>
             <div class="cbar-track">
-                <div class="cbar-fill" data-pct="{{ personal.consistency_score if personal else 0 }}"></div>
+                <div class="cbar-fill" style="width:{{ personal.consistency_score if personal else 0 }}%"></div>
             </div>
+            {% if personal and personal.consistency_feedback %}<div class="feedback-note">{{
+                personal.consistency_feedback }}</div>{% endif %}
         </div>
-        {% if personal and personal.consistency_feedback %}
-        <div class="consistency-feedback">{{ personal.consistency_feedback }}</div>
-        {% endif %}
     </div>
 
-    <!-- Body Stats Card -->
-    <div class="weekly-card">
-        <div class="stat-card-title">
-
-            Body Stats
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Body Stats</div>
         </div>
-        <div class="body-stats-grid">
+        <div class="card-body">
             {% if personal %}
-
-            {% if personal.weight %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Current Weight</span>
-                <span class="body-stat-val">{{ personal.weight }} <span class="body-stat-unit">kg</span></span>
-            </div>
-            {% endif %}
-
-            {% if personal.goal_weight %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Goal Weight</span>
-                <span class="body-stat-val">{{ personal.goal_weight }} <span class="body-stat-unit">kg</span></span>
-            </div>
-            {% endif %}
-
+            {% if personal.weight %}<div class="stat-row"><span>Current Weight</span><span>{{ personal.weight }}
+                    kg</span></div>{% endif %}
+            {% if personal.goal_weight %}<div class="stat-row"><span>Goal Weight</span><span>{{ personal.goal_weight }}
+                    kg</span></div>{% endif %}
             {% if personal.weight and personal.goal_weight %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Remaining</span>
-                {% set diff = personal.weight - personal.goal_weight %}
-                <span class="body-stat-val {% if diff > 0 %}color-red{% elif diff < 0 %}color-green{% endif %}">
-                    {% if diff > 0 %}−{{ diff }}{% elif diff < 0 %}+{{ diff|abs }}{% else %}✓ At goal{% endif %} {% if
-                        diff !=0 %}<span class="body-stat-unit">kg</span>{% endif %}
-                </span>
+            {% set diff = personal.weight - personal.goal_weight %}
+            <div class="stat-row"><span>Remaining</span><span
+                    class="{% if diff > 0 %}red{% elif diff < 0 %}green{% endif %}">{% if diff > 0 %}−{{ diff }}kg{%
+                    elif diff < 0 %}+{{ diff|abs }}kg{% else %}✓ At goal{% endif %}</span>
             </div>
             {% endif %}
-
-            {% if personal.height %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Height</span>
-                <span class="body-stat-val">{{ personal.height }} <span class="body-stat-unit">cm</span></span>
-            </div>
+            {% if personal.height %}<div class="stat-row"><span>Height</span><span>{{ personal.height }} cm</span></div>
             {% endif %}
-
-            {% if personal.waist %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Waist</span>
-                <span class="body-stat-val">{{ personal.waist }} <span class="body-stat-unit">cm</span></span>
-            </div>
-            {% endif %}
-
-            {% if personal.body_fat %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Body Fat</span>
-                <span class="body-stat-val">{{ personal.body_fat }} <span class="body-stat-unit">%</span></span>
-            </div>
-            {% endif %}
-
-            {% if personal.heart_rate %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Resting Heart Rate</span>
-                <span class="body-stat-val">{{ personal.heart_rate }} <span class="body-stat-unit">bpm</span></span>
-            </div>
-            {% endif %}
-
-            {% if personal.age %}
-            <div class="body-stat-row">
-                <span class="body-stat-label">Age</span>
-                <span class="body-stat-val">{{ personal.age }} <span class="body-stat-unit">yrs</span></span>
-            </div>
-            {% endif %}
-
-            {% if not personal.weight and not personal.height and not personal.body_fat %}
-            <div class="no-data-msg">No body stats saved yet. Update your profile to see them here.</div>
-            {% endif %}
-
+            {% if personal.waist %}<div class="stat-row"><span>Waist</span><span>{{ personal.waist }} cm</span></div>{%
+            endif %}
+            {% if personal.body_fat %}<div class="stat-row"><span>Body Fat</span><span>{{ personal.body_fat }}%</span>
+            </div>{% endif %}
+            {% if personal.heart_rate %}<div class="stat-row"><span>Resting HR</span><span>{{ personal.heart_rate }}
+                    bpm</span></div>{% endif %}
+            {% if personal.age %}<div class="stat-row"><span>Age</span><span>{{ personal.age }} yrs</span></div>{% endif
+            %}
+            {% if not personal.weight and not personal.height %}<div class="empty-note">No body stats saved yet.</div>{%
+            endif %}
             {% else %}
-            <div class="no-data-msg">Complete your profile to see body stats.</div>
+            <div class="empty-note">Complete your profile to see body stats.</div>
             {% endif %}
-        </div>
-
-        {% if personal and personal.weight and personal.goal_weight %}
-        <!-- Weight progress bar -->
-        <div style="margin-top:16px;">
-            <div class="cbar-label">
-                <span>Weight goal progress</span>
-                <span>{{ weight_progress_pct }}%</span>
-            </div>
-            <div class="cbar-track">
-                <div class="cbar-fill" data-pct="{{ weight_progress_pct }}"
-                    style="background:{% if personal.weight > personal.goal_weight %}#ef4444{% else %}#22c55e{% endif %}">
+            {% if personal and personal.weight and personal.goal_weight %}
+            <div style="margin-top:14px">
+                <div class="cbar-label"><span>Weight goal progress</span><span>{{ weight_progress_pct }}%</span></div>
+                <div class="cbar-track">
+                    <div class="cbar-fill"
+                        style="width:{{ weight_progress_pct }}%;background:{% if personal.weight > personal.goal_weight %}#ef4444{% else %}#22c55e{% endif %}">
+                    </div>
                 </div>
             </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
 
 </div>
 
-<!-- ── Session Averages ───────────────────── -->
-<div class="section-heading">Session Averages <span class="section-sub">(all logged sessions)</span></div>
+
+<div class="section-heading">Session Averages</div>
 {% if total_sessions > 0 %}
 <div class="avg-grid">
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_duration }} <span class="avg-unit">min</span></div>
+        <div class="avg-val">{{ avg_duration }}<span class="avg-unit">min</span></div>
         <div class="avg-label">Avg Duration</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_calories }} <span class="avg-unit">kcal</span></div>
+        <div class="avg-val">{{ avg_calories }}<span class="avg-unit">kcal</span></div>
         <div class="avg-label">Avg Calories</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_rating }} <span class="avg-unit">/ 10</span></div>
-        <div class="avg-label">Avg Session Rating</div>
+        <div class="avg-val">{{ avg_rating }}<span class="avg-unit">/10</span></div>
+        <div class="avg-label">Avg Rating</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_energy }} <span class="avg-unit">/ 10</span></div>
-        <div class="avg-label">Avg Energy Level</div>
+        <div class="avg-val">{{ avg_energy }}<span class="avg-unit">/10</span></div>
+        <div class="avg-label">Avg Energy</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_fatigue }} <span class="avg-unit">/ 10</span></div>
+        <div class="avg-val">{{ avg_fatigue }}<span class="avg-unit">/10</span></div>
         <div class="avg-label">Avg Fatigue</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_steps }} <span class="avg-unit">steps</span></div>
-        <div class="avg-label">Avg Daily Steps</div>
+        <div class="avg-val">{{ avg_steps }}<span class="avg-unit">steps</span></div>
+        <div class="avg-label">Avg Steps</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_sleep }} <span class="avg-unit">hrs</span></div>
+        <div class="avg-val">{{ avg_sleep }}<span class="avg-unit">hrs</span></div>
         <div class="avg-label">Avg Sleep</div>
     </div>
-
     <div class="avg-card">
-
-        <div class="avg-val">{{ avg_water }} <span class="avg-unit">/ 12</span></div>
-        <div class="avg-label">Avg Water Intake</div>
+        <div class="avg-val">{{ avg_water }}<span class="avg-unit">/12</span></div>
+        <div class="avg-label">Avg Water</div>
     </div>
-
 </div>
 {% else %}
 <div class="empty-state">
-
     <div class="empty-title">No sessions yet</div>
-    <div class="empty-sub">Log your first workout to start seeing averages here.</div>
+    <div class="empty-sub">Log your first workout to see averages here.</div>
 </div>
 {% endif %}
 
-<!-- ── Middle Row: Mood + Calendar + Workout Types ── -->
 <div class="section-heading">Activity & Mood</div>
-<div class="mid-row">
+<div class="activity-row">
 
-    <!-- Mood -->
     {% if mood_data %}
-    <div class="mood-card mid-mood">
-        <div class="stat-card-title">
-
-            Mood Before Workouts
+    <div class="card mood-card">
+        <div class="card-head">
+            <div class="card-title">Mood Before Workouts</div>
         </div>
-        <div class="mood-bars">
+        <div class="card-body">
             {% for mood in mood_data %}
             <div class="mood-row">
                 <div class="mood-name">{{ mood.label }}</div>
                 <div class="mood-track">
-                    <div class="mood-fill" data-pct="{{ mood.pct }}" style="background:{{ mood.color }}"></div>
+                    <div class="mood-fill" style="width:{{ mood.pct }}%;background:{{ mood.color }}"></div>
                 </div>
-                <div class="mood-count">{{ mood.count }}x <span class="mood-pct-label">({{ mood.pct }}%)</span></div>
+                <div class="mood-count">{{ mood.count }}x ({{ mood.pct }}%)</div>
             </div>
             {% endfor %}
         </div>
     </div>
     {% endif %}
 
-    <!-- Calendar -->
-    <div class="calendar-card mid-cal">
-        <div class="stat-card-title">
-
-            Activity Calendar
+    <div class="card cal-card">
+        <div class="card-head">
+            <div class="card-title">Activity Calendar</div>
         </div>
-        <div class="cal-header">
-            <button id="calPrev">‹</button>
-            <div id="calMonth"></div>
-            <button id="calNext">›</button>
+        <div class="card-body">
+            <div class="cal-header">
+                <button id="calPrev">‹</button>
+                <div id="calMonth"></div>
+                <button id="calNext">›</button>
+            </div>
+            <div class="cal-days">
+                <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+            </div>
+            <div class="cal-grid" id="calGrid" data-logs='{{ calendar_data|tojson }}'></div>
         </div>
-        <div class="cal-days">
-            <span>Su</span><span>Mo</span><span>Tu</span>
-            <span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
-        </div>
-        <div class="cal-grid" id="calGrid" data-logs='{{ calendar_data | tojson }}'></div>
     </div>
 
-    <!-- Workout Types -->
     {% if workout_type_data %}
-    <div class="wtype-side mid-wtype">
-        <div class="stat-card-title" style="margin-bottom:14px;">
-
-            Workout Types
+    <div class="card wtype-card">
+        <div class="card-head">
+            <div class="card-title">Workout Types</div>
         </div>
-        <div class="wtype-stack">
+        <div class="card-body">
             {% for wt in workout_type_data %}
-            <div class="wtype-card">
-                <div class="wtype-val">{{ wt.count }}</div>
-                <div class="wtype-label">{{ wt.name }}</div>
-                <div class="wtype-bar-track">
-                    <div class="wtype-bar-fill" data-pct="{{ wt.pct }}" style="background:{{ wt.color }}"></div>
+            <div class="wtype-row">
+                <div class="wtype-name">{{ wt.name }}</div>
+                <div class="wtype-track">
+                    <div class="wtype-fill" style="width:{{ wt.pct }}%;background:{{ wt.color }}"></div>
                 </div>
-                <div class="wtype-pct">{{ wt.pct }}%</div>
+                <div class="wtype-count">{{ wt.count }}x</div>
             </div>
             {% endfor %}
         </div>
@@ -331,46 +223,33 @@
     {% endif %}
 
 </div>
-<!-- ── Recent Sessions Log ───────────────── -->
+
+
 <div class="section-heading">Recent Sessions</div>
 {% if recent_sessions %}
-<div class="sessions-card">
+<div class="card sessions-card">
     {% for s in recent_sessions %}
     <div class="session-row">
         <div class="session-date-col">
-            <div class="session-date">{{ s.day_name }}</div>
-            <div class="session-date-sub">{{ s.date_fmt }}</div>
+            <div class="session-day">{{ s.day_name }}</div>
+            <div class="session-date">{{ s.date_fmt }}</div>
         </div>
-        <div class="session-info-col">
+        <div class="session-info">
             <div class="session-type">{{ s.workout_type or 'Workout' }}</div>
-            <div class="session-meta">
-                {% if s.duration %}{{ s.duration }} min{% endif %}
-                {% if s.calories %} · {{ s.calories }} kcal{% endif %}
-                {% if s.completion %} · {{ s.completion }}{% endif %}
-            </div>
+            <div class="session-meta">{% if s.duration %}{{ s.duration }} min{% endif %}{% if s.calories %} · {{
+                s.calories }} kcal{% endif %}{% if s.completion %} · {{ s.completion }}{% endif %}</div>
         </div>
-        <div class="session-badges">
-            {% if s.rating %}
-            <span class="session-badge rating">{{ s.rating }}/10</span>
-            {% endif %}
-            {% if s.fatigue %}
-            <span class="session-badge fatigue {% if s.fatigue >= 7 %}high{% endif %}">
-                Fatigue {{ s.fatigue }}/10
-            </span>
-            {% endif %}
-        </div>
+
     </div>
     {% endfor %}
 </div>
 {% else %}
 <div class="empty-state">
     <div class="empty-title">No sessions logged yet</div>
-    <div class="empty-sub">Start logging your workouts and they'll appear here.</div>
+    <div class="empty-sub">Start logging your workouts to see them here.</div>
 </div>
 {% endif %}
 
 {% endblock %}
-
 {% block extra_js %}
-<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
-{% endblock %}
+<script src="/js/progress.js"></script>{% endblock %}

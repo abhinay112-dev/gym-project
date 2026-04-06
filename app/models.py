@@ -70,36 +70,31 @@ class Persondetails(db.Model):
 
 
 class DailyLog(db.Model):
-    """
-    One row per user per calendar day.
-    Tracks pre/post workout submissions, streak logic,
-    water intake, step count, and LLM feedback.
-    """
+
     __tablename__ = 'daily_logs'
 
     id          = db.Column(db.Integer, primary_key=True, autoincrement=True)
     uid         = db.Column(db.Integer, db.ForeignKey('users.uid', ondelete='CASCADE'), nullable=False)
-    log_date = db.Column(db.Date, nullable=False)  # 'YYYY-MM-DD'
+    log_date = db.Column(db.Date, nullable=False)  
 
-    # Pre-workout fields
     pre_submitted     = db.Column(db.Boolean, default=False)
     pre_workout_type  = db.Column(db.Text,    nullable=True)
     pre_energy_level  = db.Column(db.Integer, nullable=True)
     pre_sleep_hours   = db.Column(db.Integer, nullable=True)
-    pre_water_intake  = db.Column(db.Integer, nullable=True)   # glasses (0-12)
+    pre_water_intake  = db.Column(db.Integer, nullable=True)   
     pre_mood          = db.Column(db.Text,    nullable=True)
     pre_injuries      = db.Column(db.Text,    nullable=True)
     pre_time          = db.Column(db.Text,    nullable=True)
 
-    # Post-workout fields
+  
     post_submitted    = db.Column(db.Boolean, default=False)
-    post_duration     = db.Column(db.Integer, nullable=True)   # minutes
+    post_duration     = db.Column(db.Integer, nullable=True)   
     post_calories     = db.Column(db.Integer, nullable=True)
-    post_rating       = db.Column(db.Integer, nullable=True)   # 1-10
-    post_fatigue      = db.Column(db.Integer, nullable=True)   # 1-10
+    post_rating       = db.Column(db.Integer, nullable=True)   
+    post_fatigue      = db.Column(db.Integer, nullable=True)   
     post_completion   = db.Column(db.Text,    nullable=True)
 
-    # Shared daily metrics
+  
     steps             = db.Column(db.Integer, nullable=True, default=0)
     llm_feedback      = db.Column(db.Text,    nullable=True)
 
@@ -112,17 +107,14 @@ class DailyLog(db.Model):
 
 
 class WorkoutLog(db.Model):
-    """
-    One row per exercise set completion.
-    Stores which exercise was ticked and on which day.
-    """
+
     __tablename__ = 'workout_logs'
 
     id            = db.Column(db.Integer, primary_key=True, autoincrement=True)
     uid           = db.Column(db.Integer, db.ForeignKey('users.uid', ondelete='CASCADE'), nullable=False)
-    log_date = db.Column(db.Date, nullable=False) # 'YYYY-MM-DD'
+    log_date = db.Column(db.Date, nullable=False) 
     exercise_name = db.Column(db.String(100), nullable=False)
-    set_index     = db.Column(db.Integer, nullable=False)  # 0-based set number
+    set_index     = db.Column(db.Integer, nullable=False)  
     completed     = db.Column(db.Boolean, default=True)
 
     __table_args__ = (
@@ -132,3 +124,16 @@ class WorkoutLog(db.Model):
 
     def __repr__(self):
         return f'<WorkoutLog uid={self.uid} date={self.log_date} ex={self.exercise_name} set={self.set_index}>'
+class WorkoutRecommendation(db.Model):
+
+    __tablename__ = 'workout_recommendations'
+
+    id                = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    gender            = db.Column(db.Text, nullable=True)
+    goal              = db.Column(db.Text, nullable=True)   
+    bmi_category      = db.Column(db.Text, nullable=True)   
+    exercise_schedule = db.Column(db.Text, nullable=True)
+    meal_plan         = db.Column(db.Text, nullable=True)
+
+    def __repr__(self):
+        return f'<WorkoutRecommendation {self.gender} | {self.goal} | {self.bmi_category}>'

@@ -4,784 +4,89 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GymBhai — Train Harder. Track Smarter.</title>
+    <title>GymTracker</title>
     <link
-        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400;600&display=swap"
         rel="stylesheet" />
-    <style>
-        :root {
-            --black: #111111;
-            --dark: #1a1a1a;
-            --accent: #d94f2b;
-            --accent-dim: #b03e20;
-            --cream: #f5f4f0;
-            --muted: #555;
-            --border: #222222;
-        }
-
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Barlow', sans-serif;
-            background: var(--black);
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* ── NAV ── */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            height: 62px;
-            display: flex;
-            align-items: center;
-            padding: 0 48px;
-            border-bottom: 1px solid var(--border);
-            background: var(--black);
-        }
-
-        .nav-logo {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 24px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #fff;
-        }
-
-        .nav-logo span {
-            color: var(--accent);
-        }
-
-        .nav-spacer {
-            flex: 1;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-link {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #888;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: color 0.2s, background 0.2s;
-        }
-
-        .nav-link:hover {
-            color: #fff;
-            background: #1e1e1e;
-        }
-
-        .nav-btn {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #fff;
-            text-decoration: none;
-            padding: 9px 22px;
-            border-radius: 6px;
-            background: var(--accent);
-            transition: background 0.2s;
-        }
-
-        .nav-btn:hover {
-            background: var(--accent-dim);
-        }
-
-        /* ── HERO ── */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 100px 24px 60px;
-        }
-
-        .hero-quote {
-            font-family: 'Barlow', sans-serif;
-            font-size: clamp(18px, 2.5vw, 24px);
-            font-weight: 300;
-            color: #999;
-            max-width: 460px;
-            line-height: 1.65;
-            letter-spacing: 0.2px;
-            font-style: italic;
-            margin-bottom: 8px;
-        }
-
-        .hero-quote-attr {
-            font-size: 11px;
-            color: #3a3a3a;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .hero-sub {
-            font-size: clamp(14px, 2vw, 17px);
-            color: #666;
-            max-width: 500px;
-            line-height: 1.65;
-            margin: 28px auto 48px;
-            font-weight: 300;
-        }
-
-        .hero-sub strong {
-            color: #aaa;
-            font-weight: 500;
-        }
-
-        .hero-ctas {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .cta-primary {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--accent);
-            color: #fff;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 16px 38px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: background 0.2s;
-        }
-
-        .cta-primary:hover {
-            background: var(--accent-dim);
-        }
-
-        .cta-secondary {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: var(--black);
-            color: #aaa;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            padding: 16px 38px;
-            border-radius: 8px;
-            text-decoration: none;
-            border: 1px solid #2a2a2a;
-            transition: color 0.2s, border-color 0.2s, background 0.2s;
-        }
-
-        .cta-secondary:hover {
-            color: #fff;
-            border-color: #444;
-            background: #1e1e1e;
-        }
-
-        /* ── STATS STRIP ── */
-
-        .stat-num {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 40px;
-            font-weight: 900;
-            color: #fff;
-            line-height: 1;
-            letter-spacing: -1px;
-        }
-
-        .stat-num span {
-            color: var(--accent);
-        }
-
-        .stat-label {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #444;
-            margin-top: 6px;
-        }
-
-        /* ── FEATURES SECTION ── */
-        .features {
-            padding: 90px 48px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3.5px;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-label::before {
-            content: '';
-            width: 24px;
-            height: 2px;
-            background: var(--accent);
-            border-radius: 1px;
-        }
-
-        .features-heading {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: clamp(36px, 5vw, 54px);
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #fff;
-            line-height: 1;
-            margin-bottom: 56px;
-        }
-
-        .features-heading span {
-            color: var(--accent);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2px;
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            overflow: hidden;
-        }
-
-        .feature-card {
-            padding: 32px 28px;
-            background: var(--dark);
-            border-right: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-            transition: background 0.2s;
-        }
-
-        .feature-card:nth-child(3n) {
-            border-right: none;
-        }
-
-        .feature-card:nth-child(n+4) {
-            border-bottom: none;
-        }
-
-        .feature-card:hover {
-            background: #202020;
-        }
-
-        .fc-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            background: #2a1a14;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-            margin-bottom: 18px;
-        }
-
-        .fc-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 19px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .fc-desc {
-            font-size: 13px;
-            color: #555;
-            line-height: 1.6;
-        }
-
-        /* ── DIVIDER ── */
-        .accent-divider {
-            height: 1px;
-            background: var(--border);
-        }
-
-        /* ── FOOTER ── */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 56px 48px 40px;
-        }
-
-        .footer-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 40px;
-            flex-wrap: wrap;
-            margin-bottom: 48px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .footer-brand .nav-logo {
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .footer-tagline {
-            font-size: 13px;
-            color: #444;
-            max-width: 240px;
-            line-height: 1.6;
-        }
-
-        .footer-col-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #444;
-            margin-bottom: 16px;
-        }
-
-        .footer-links {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .footer-links a {
-            font-size: 14px;
-            color: #555;
-            text-decoration: none;
-            transition: color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .footer-links a:hover {
-            color: #fff;
-        }
-
-        .footer-links a svg {
-            opacity: 1;
-        }
-
-        /* ── TEAM ── */
-        .team-section {
-            margin-bottom: 40px;
-        }
-
-        .team-section-title {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #333;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .team-section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .team-grid {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .team-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: var(--dark);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 18px;
-            min-width: 220px;
-            transition: border-color 0.2s;
-        }
-
-        .team-card:hover {
-            border-color: #333;
-        }
-
-        .team-avatar {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 14px;
-            font-weight: 800;
-            color: #fff;
-            flex-shrink: 0;
-            text-transform: uppercase;
-        }
-
-        .team-info {
-            flex: 1;
-        }
-
-        .team-name {
-            font-family: 'Barlow Condensed', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: #ccc;
-        }
-
-        .team-roll {
-            font-size: 11px;
-            color: #444;
-            font-family: 'Barlow', monospace;
-            letter-spacing: 0.5px;
-            margin-top: 1px;
-        }
-
-        .footer-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .footer-copy {
-            font-size: 12px;
-            color: #333;
-        }
-
-        .footer-copy span {
-            color: var(--accent);
-        }
-
-        /* ── RESPONSIVE ── */
-        @media (max-width: 768px) {
-            nav {
-                padding: 0 20px;
-            }
-
-            .nav-link {
-                display: none;
-            }
-
-            .hero {
-                padding: 90px 20px 40px;
-            }
-
-            .features {
-                padding: 60px 20px;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .feature-card {
-                border-right: none !important;
-                border-bottom: 1px solid var(--border) !important;
-            }
-
-            .feature-card:last-child {
-                border-bottom: none !important;
-            }
-
-
-            .stat-item {
-                min-width: 45%;
-                border-right: 1px solid var(--border) !important;
-            }
-
-            .stat-item:nth-child(2n) {
-                border-right: none !important;
-            }
-
-            footer {
-                padding: 40px 20px 28px;
-            }
-
-            .footer-top {
-                flex-direction: column;
-            }
-
-            .team-card {
-                min-width: 0;
-                flex: 1 1 160px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/css/landing.css" />
 </head>
 
 <body>
 
-    <!-- ── NAV ── -->
     <nav>
-        <span class="nav-logo">Gym<span>Bhai</span></span>
-        <div class="nav-spacer"></div>
+        <span class="logo">Gym<span>Tracker</span></span>
         <div class="nav-links">
-            <a href="#features" class="nav-link">Features</a>
-            <a href="#team" class="nav-link">Team</a>
-            <a href="{{ url_for('login') }}" class="nav-link">Login</a>
-            <a href="{{ url_for('signup') }}" class="nav-btn">Sign Up Free</a>
+            <a href="{{ url_for('login') }}">Login</a>
+            <a href="{{ url_for('signup') }}" class="btn-nav">Sign Up</a>
         </div>
     </nav>
-
-    <!-- ── HERO ── -->
-    <section class="hero">
-        <p class="hero-quote">"Discipline is doing it when you don't feel like it. That's the only time it counts."</p>
-        <p class="hero-quote-attr">— the gym bhai philosophy</p>
-
-        <p class="hero-sub">
-            GymBhai is your all-in-one fitness tracker — log workouts, monitor
-            <strong>consistency scores</strong>, review weekly progress and get
-            <strong>AI-powered coaching</strong> built for real gym-goers.
-        </p>
-
-        <div class="hero-ctas">
-            <a href="{{ url_for('signup') }}" class="cta-primary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <line x1="19" y1="8" x2="19" y2="14" />
-                    <line x1="22" y1="11" x2="16" y2="11" />
-                </svg>
-                Create Account
-            </a>
-            <a href="{{ url_for('login') }}" class="cta-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
-                    <polyline points="10 17 15 12 10 7" />
-                    <line x1="15" y1="12" x2="3" y2="12" />
-                </svg>
-                Log In
-            </a>
+    <section class="features">
+        <h2>Features</h2>
+        <div class="grid">
+            <div class="feat"><strong>Authentication system</strong>
+                <p>Authentication system with secure password hashing using bcrypt library</p>
+            </div>
+            <div class="feat"><strong>Workout Tracker</strong>
+                <p>tracks the streak and workout log sets</p>
+            </div>
+            <div class="feat"><strong>progress dashboard & Consistency Score</strong>
+                <p>record all the data of user and give the Consistency score based on no of days login and streak etc
+                </p>
+            </div>
+            <div class="feat"><strong>pre-Workout Review and post-workout review </strong>
+                <p>user can give post and pre workout data to the system</p>
+            </div>
+            <div class="feat"><strong>Ai feedback</strong>
+                <p>llm gives feedback to the user based on the user data collected form the pre and
+                    post workout form</p>
+            </div>
+            <div class="feat"><strong>AI chatbot</strong>
+                <p>page aware llm chatbot that can unteract and give answer to the users questions
+                    related to that page</p>
+            </div>
+            <div class="feat"><strong>BMI Calculator</strong>
+                <p>in profile page system automatically calculate and display the bmi from the user
+                    data</p>
+            </div>
+            <div class="feat"><strong>Meal Plan Predictor</strong>
+                <p>the machine learning model predicts the meal plan using the user data like Gender ,
+                    goal,bmi
+                    ,exercise schedule</p>
+            </div>
+            <div class="feat"><strong>Blog Articles</strong>
+                <p>articles with photos and videos related to the exercise set so that user can
+                    understand how to do and why do the exercise set properly</p>
+            </div>
+            <div class="feat"><strong>Daily Quote</strong>
+                <p>daily quote is displayed in homw page to motivate the users</p>
+            </div>
+            <div class="feat"><strong>user profile</strong>
+                <p>user can update and delete the data related to the user such as goal , weight ,
+                    height etc</p>
+            </div>
+            <div class="feat"><strong>account deletion and creations</strong>
+                <p>no two user can have same username and if user wants to delete the account user can
+                    delete there account from the profile page</p>
+            </div>
         </div>
     </section>
 
-
-    <!-- ── FEATURES ── -->
-    <section class="features" id="features">
-        <div class="section-label">What You Get</div>
-        <h2 class="features-heading">Built for <span>Athletes</span><br>Who Mean It</h2>
-
-        <div class="features-grid">
-
-            <div class="feature-card">
-
-                <div class="fc-title">Workout Tracker</div>
-                <div class="fc-desc">Log sets, reps and weights interactively. Mark each exercise done in real time with
-                    a visual progress ring.</div>
-            </div>
-
-            <div class="feature-card">
-
-                <div class="fc-title">Consistency Score</div>
-                <div class="fc-desc">See your monthly consistency as a score out of 100. Streaks, missed days and rest
-                    days — all tracked.</div>
-            </div>
-
-            <div class="feature-card">
-                <div class="fc-title">Weekly Report</div>
-                <div class="fc-desc">Bar chart view of your week — sessions completed, calories burned, total time, and
-                    how you compare to last week.</div>
-            </div>
-
-            <div class="feature-card">
-                <div class="fc-title">Pre-Workout Check-in</div>
-                <div class="fc-desc">Log your energy, sleep quality, meal timing and session goals before every training
-                    session.</div>
-            </div>
-
-            <div class="feature-card">
-                <div class="fc-title">Post-Workout Review</div>
-                <div class="fc-desc">Rate your session, log calories, note personal records and track recovery — every
-                    session, every time.</div>
-            </div>
-
-            <div class="feature-card">
-                <div class="fc-title">AI Assistant</div>
-                <div class="fc-desc">Page-aware AI coach answers questions about any workout, form cues, muscle groups
-                    and technique — on every page.</div>
-            </div>
-
-        </div>
-    </section>
-
-    <div class="accent-divider"></div>
-
-    <!-- ── FOOTER ── -->
-    <footer id="team">
-
-        <div class="footer-top">
-            <div class="footer-brand">
-                <span class="nav-logo">Gym<span>Bhai</span></span>
-                <p class="footer-tagline">Train harder, track smarter. Built by students, for athletes.</p>
-            </div>
+    <footer>
+        <div class="footer-inner">
 
             <div>
-                <div class="footer-col-title">Navigate</div>
-                <ul class="footer-links">
-                    <li><a><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M3 9.5L12 3l9 6.5V20H4V9.5z" />
-                            </svg>Dashboard</a></li>
-                    <li><a><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="2" y="10" width="3" height="4" rx="1" />
-                                <rect x="19" y="10" width="3" height="4" rx="1" />
-                                <line x1="5" y1="12" x2="19" y2="12" stroke-width="3" />
-                            </svg>Arms &amp; Shoulders</a></li>
-                    <li><a><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="12" cy="4" r="2" />
-                                <path d="M12 6v5l-3 5h6" />
-                            </svg>Legs</a></li>
-                    <li><a><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="4" y="4" width="6" height="7" rx="1" />
-                                <rect x="14" y="4" width="6" height="7" rx="1" />
-                                <rect x="4" y="14" width="6" height="6" rx="1" />
-                                <rect x="14" y="14" width="6" height="6" rx="1" />
-                            </svg>Abs &amp; Core</a></li>
-                    <li><a><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="3 12 6 12 9 5 12 19 15 9 18 12 21 12" />
-                            </svg>Cardio</a></li>
-                </ul>
+                <strong>Account</strong>
+                <a href="{{ url_for('signup') }}">Sign Up</a>
+                <a href="{{ url_for('login') }}">Log In</a>
             </div>
-
-            <div>
-                <div class="footer-col-title">Account</div>
-                <ul class="footer-links">
-                    <li>
-                        <a href="{{ url_for('signup') }}">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <circle cx="9" cy="7" r="4" />
-                                <path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" />
-                                <line x1="19" y1="8" x2="19" y2="14" />
-                                <line x1="22" y1="11" x2="16" y2="11" />
-                            </svg>
-                            Sign Up
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ url_for('login') }}">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4" />
-                                <polyline points="10 17 15 12 10 7" />
-                                <line x1="15" y1="12" x2="3" y2="12" />
-                            </svg>
-                            Log In
-                        </a>
-                    </li>
-                </ul>
+            <div class="team">
+                <span>Team:</span>
+                <span>Koushik (24211A05W8)</span>
+                <span>Abhinay (24211A05X6)</span>
+                <span>Rasagnya (2521A0532)</span>
+                <span>Kuruma Rakesh (24211A05X2)</span>
             </div>
-        </div>
-
-        <!-- ── TEAM ── -->
-        <div class="team-section">
-            <div class="team-section-title">Project Team</div>
-            <div class="team-grid">
-                <div class="team-card">
-                    <div class="team-avatar">K</div>
-                    <div class="team-info">
-                        <div class="team-name">Koushik (team leader)</div>
-                        <div class="team-roll">24211A05W8</div>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="team-avatar">A</div>
-                    <div class="team-info">
-                        <div class="team-name">Abhinay</div>
-                        <div class="team-roll">24211A05X6</div>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="team-avatar">R</div>
-                    <div class="team-info">
-                        <div class="team-name">Rasagnya</div>
-                        <div class="team-roll">2521A0532</div>
-                    </div>
-                </div>
-                <div class="team-card">
-                    <div class="team-avatar">K</div>
-                    <div class="team-info">
-                        <div class="team-name">Kuruma Rakesh</div>
-                        <div class="team-roll">24211A05X2</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer-bottom">
-            <div class="footer-copy">© 2025 <span>GymBhai</span> — a college project.</div>
-        </div>
-
     </footer>
-
-    <script>
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', e => {
-                const target = document.querySelector(a.getAttribute('href'));
-                if (target) {
-                    e.preventDefault();
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-    </script>
 
 </body>
 
