@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+    <script>
+        (function () {
+            if (localStorage.getItem('theme') === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Gym Tracker{% endblock %}</title>
@@ -32,6 +39,7 @@
         </div>
         <div class="nav-spacer"></div>
         <div class="nav-right">
+            <button id="theme-toggle" aria-label="Switch to light mode"></button>
             <div class="nav-streak">
                 <strong id="streak-count"
                     data-streak="{{ current_user.personal.streak if current_user.personal and current_user.personal.streak is defined else 0 }}">0</strong>

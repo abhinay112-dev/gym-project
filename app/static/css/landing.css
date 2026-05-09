@@ -155,7 +155,7 @@ nav {
     border-color: #444;
 }
 
-/* features */
+
 .features {
     padding: 80px 40px;
     max-width: 1000px;
@@ -206,7 +206,7 @@ nav {
     line-height: 1.6;
 }
 
-/* footer */
+
 footer {
     border-top: 1px solid var(--border);
     padding: 40px;

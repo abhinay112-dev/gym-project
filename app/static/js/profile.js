@@ -180,8 +180,19 @@
 
     (function init() {
         if (DB.level) { const c = document.querySelector(`.level-card[data-level="${DB.level}"]`); if (c) selectLevel(c); }
-        if (DB.going_to_gym) setGymToggle(DB.going_to_gym);
-        if (DB.goal) { const o = document.querySelector(`.goal-option[data-goal="${DB.goal}"]`); if (o) selectGoal(o); }
+        if (DB.going_to_gym) setGymToggle(String(DB.going_to_gym).toLowerCase());
+        if (DB.goal) {
+            const raw = String(DB.goal).toLowerCase();
+            const normalized = ({
+                lose_weight: 'lose',
+                build_muscle: 'muscle',
+                improve_endurance: 'endurance',
+                maintain_tone: 'maintain',
+                sport_performance: 'sport',
+            })[raw] || raw;
+            const o = document.querySelector(`.goal-option[data-goal="${normalized}"]`);
+            if (o) selectGoal(o);
+        }
         calcMetrics();
     })();
 

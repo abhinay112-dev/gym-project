@@ -25,7 +25,7 @@
             <span class="tag" id="heroAge" style="display:none"></span>
             {% endif %}
             {% if p and p.level %}<span class="tag accent">{{ p.level|capitalize }}</span>{% endif %}
-            {% if p and p.going_to_gym %}<span class="tag">{{ 'At Gym' if p.going_to_gym == 'yes' else 'Home Training'
+            {% if p and p.going_to_gym %}<span class="tag">{{ 'At Gym' if p.going_to_gym|lower == 'yes' else 'Home Training'
                 }}</span>{% endif %}
         </div>
         <div class="profile-username">@{{ current_user.username }}</div>
@@ -342,8 +342,8 @@
 <script>
     window.PROFILE_DB = {
         level: {{ ('"' ~p.level ~ '"') if p and p.level else 'null' }},
-    going_to_gym: { { ('"' ~p.going_to_gym ~ '"') if p and p.going_to_gym else 'null' } },
-    goal: { { ('"' ~p.goal ~ '"') if p and p.goal else 'null' } }
+        going_to_gym: {{ ('"' ~ p.going_to_gym ~ '"') if p and p.going_to_gym else 'null' }},
+        goal: {{ ('"' ~ p.goal ~ '"') if p and p.goal else 'null' }}
     };
 </script>
 <script src="/js/profile.js"></script>

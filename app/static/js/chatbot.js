@@ -11,10 +11,30 @@
     let isOpen = false;
     let isLoading = false;
 
-    function addBotMessage(html) {
+    function setTextWithLineBreaks(el, text) {
+        el.textContent = '';
+        const parts = String(text || '').split('\n');
+        parts.forEach((part, idx) => {
+            if (idx) el.appendChild(document.createElement('br'));
+            el.appendChild(document.createTextNode(part));
+        });
+    }
+
+    function addBotMessage(text) {
         const bubble = document.createElement('div');
         bubble.className = 'chat-bubble bot';
-        bubble.innerHTML = '<div class="bubble-label">GymTracker AI</div>' + html;
+
+        const label = document.createElement('div');
+        label.className = 'bubble-label';
+        label.textContent = 'GymTracker AI';
+
+        const content = document.createElement('div');
+        content.className = 'bubble-content';
+        setTextWithLineBreaks(content, text);
+
+        bubble.appendChild(label);
+        bubble.appendChild(content);
+
         messages.appendChild(bubble);
         messages.scrollTop = messages.scrollHeight;
     }
@@ -53,8 +73,8 @@
         if (isOpen && messages.children.length === 0) {
             const pageName = document.title.replace('Gym Tracker —', '').trim();
             addBotMessage(
-                'Hey! I\'m your <strong>GymTracker AI</strong> assistant.<br>' +
-                'I can answer questions about the <strong>' + pageName + '</strong> page. What would you like to know?'
+                "Hey! I'm your GymTracker AI assistant.\n" +
+                "I can answer questions about the " + pageName + " page. What would you like to know?"
             );
         }
     });

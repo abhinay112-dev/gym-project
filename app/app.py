@@ -38,7 +38,7 @@ le_meal          = _load('label_encoder_meal.pkl')
 def create_app():
     app = Flask(__name__, template_folder="templates", static_folder='static', static_url_path='/')
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:123456789@localhost/webproject'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:password@host/db'
     app.secret_key = 'SOME KEY'
 
     db.init_app(app)

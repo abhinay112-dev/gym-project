@@ -253,10 +253,12 @@ def register_routes(app, db, bcrypt):
         s = str(val).strip()
         return s if s else default
 
-    def _get_or_create_daily_log(uid, log_date_str):
-        log = DailyLog.query.filter_by(uid=uid, log_date=log_date_str).first()
+    def _get_or_create_daily_log(uid, log_date_val):
+        if isinstance(log_date_val, str):
+            log_date_val = date.fromisoformat(log_date_val)
+        log = DailyLog.query.filter_by(uid=uid, log_date=log_date_val).first()
         if not log:
-            log = DailyLog(uid=uid, log_date=log_date_str)
+            log = DailyLog(uid=uid, log_date=log_date_val)
             db.session.add(log)
             db.session.flush()
         return log
@@ -274,9 +276,9 @@ def register_routes(app, db, bcrypt):
         if not personal:
             return
 
-        today = date.fromisoformat(log_date_str)
-        yesterday_str = (today - timedelta(days=1)).isoformat()
-        yesterday_log = DailyLog.query.filter_by(uid=uid, log_date=yesterday_str).first()
+        today = date.fromisoformat(log_date_str) if isinstance(log_date_str, str) else log_date_str
+        yesterday = today - timedelta(days=1)
+        yesterday_log = DailyLog.query.filter_by(uid=uid, log_date=yesterday).first()
 
         current_streak = personal.streak or 0
 
@@ -298,7 +300,7 @@ def register_routes(app, db, bcrypt):
             return 0, "No profile found."
 
         today = get_today()
-        thirty_days_ago = (today - timedelta(days=30)).isoformat()
+        thirty_days_ago = today - timedelta(days=30)
         logs = DailyLog.query.filter(
             DailyLog.uid == uid,
             DailyLog.log_date >= thirty_days_ago
@@ -555,6 +557,26 @@ Now write the personalised coaching feedback paragraph:"""
         gender       = data.get('gender')
         goal         = data.get('goal')
 
+        def _norm_gym(v):
+            v = _str(v)
+            if not v:
+                return None
+            v = v.lower()
+            return "yes" if v in ("yes", "y", "true", "1") else "no" if v in ("no", "n", "false", "0") else v
+
+        def _norm_goal(v):
+            v = _str(v)
+            if not v:
+                return None
+            v = v.lower()
+            return {
+                "lose_weight": "lose",
+                "build_muscle": "muscle",
+                "improve_endurance": "endurance",
+                "maintain_tone": "maintain",
+                "sport_performance": "sport",
+            }.get(v, v)
+
         user = current_user
         persondetails = Persondetails(
             user=user,
@@ -562,11 +584,11 @@ Now write the personalised coaching feedback paragraph:"""
             name=name,
             weight=weight,
             goal_weight=goal_weight,
-            going_to_gym=going_to_gym,
+            going_to_gym=_norm_gym(going_to_gym),
             level=level,
             height=height,
             gender=gender,
-            goal=goal
+            goal=_norm_goal(goal)
         )
         db.session.add(persondetails)
         db.session.commit()
@@ -585,11 +607,12 @@ Now write the personalised coaching feedback paragraph:"""
     @login_required
     def home():
         quote   = get_daily_quote()
-        today   = get_today().isoformat()
+        today_dt = get_today()
+        today   = today_dt.isoformat()
         uid     = current_user.uid
         personal = current_user.personal
 
-        daily_log = DailyLog.query.filter_by(uid=uid, log_date=today).first()
+        daily_log = DailyLog.query.filter_by(uid=uid, log_date=today_dt).first()
 
      
         level   = (personal.level if personal else None) or "beginner"
@@ -597,7 +620,7 @@ Now write the personalised coaching feedback paragraph:"""
 
         completed_sets = {}
         if workout["exercises"]:
-            wlogs = WorkoutLog.query.filter_by(uid=uid, log_date=today).all()
+            wlogs = WorkoutLog.query.filter_by(uid=uid, log_date=today_dt).all()
             for wl in wlogs:
                 key = wl.exercise_name
                 if key not in completed_sets:
@@ -610,7 +633,7 @@ Now write the personalised coaching feedback paragraph:"""
         consistency_score    = (personal.consistency_score if personal else 0) or 0
         consistency_feedback = (personal.consistency_feedback if personal else None) or "Complete your first session to generate your score!"
 
-        thirty_ago = (get_today() - timedelta(days=30)).isoformat()
+        thirty_ago = get_today() - timedelta(days=30)
         month_logs = DailyLog.query.filter(
             DailyLog.uid == uid,
             DailyLog.log_date >= thirty_ago
@@ -618,13 +641,12 @@ Now write the personalised coaching feedback paragraph:"""
         sessions_this_month = sum(1 for l in month_logs if l.post_submitted)
         missed_days = max(0, 30 - sessions_this_month - sum(1 for l in month_logs if not l.post_submitted and not l.pre_submitted))
 
-        today_dt = get_today()
         week_start = today_dt - timedelta(days=today_dt.weekday())
         week_data  = []
         for i in range(7):
             d = week_start + timedelta(days=i)
             d_str = d.isoformat()
-            dlog = DailyLog.query.filter_by(uid=uid, log_date=d_str).first()
+            dlog = DailyLog.query.filter_by(uid=uid, log_date=d).first()
             if d > today_dt:
                 status = "future"
                 height = 0
@@ -661,8 +683,8 @@ Now write the personalised coaching feedback paragraph:"""
 
         week_logs = [l for l in DailyLog.query.filter(
             DailyLog.uid == uid,
-            DailyLog.log_date >= week_start.isoformat(),
-            DailyLog.log_date <= today_dt.isoformat()
+            DailyLog.log_date >= week_start,
+            DailyLog.log_date <= today_dt
         ).all()]
         weekly_sessions = sum(1 for l in week_logs if l.post_submitted)
         weekly_calories = sum(l.post_calories or 0 for l in week_logs)
@@ -720,22 +742,23 @@ Now write the personalised coaching feedback paragraph:"""
     @login_required
     def api_pre_workout():
         data = request.get_json(silent=True) or {}
-        today_str = get_today().isoformat()
+        today_dt = get_today()
+        today_str = today_dt.isoformat()
         uid = current_user.uid
 
         
         if data.get('_water_only'):
-            log = _get_or_create_daily_log(uid, today_str)
+            log = _get_or_create_daily_log(uid, today_dt)
             log.pre_water_intake = _int(data.get('water_intake'), log.pre_water_intake or 0)
             db.session.commit()
             return jsonify({"status": "ok", "water_today": log.pre_water_intake})
 
 
-        existing = DailyLog.query.filter_by(uid=uid, log_date=today_str).first()
+        existing = DailyLog.query.filter_by(uid=uid, log_date=today_dt).first()
         if existing and existing.pre_submitted:
             return jsonify({"status": "already_submitted", "message": "Pre-workout already logged for today."})
 
-        log = _get_or_create_daily_log(uid, today_str)
+        log = _get_or_create_daily_log(uid, today_dt)
         log.pre_submitted    = True
         log.pre_workout_type = _str(data.get("workout_type"))
         log.pre_energy_level = _int(data.get("energy_level"))
@@ -758,14 +781,15 @@ Now write the personalised coaching feedback paragraph:"""
     @login_required
     def api_post_workout():
         data = request.get_json(silent=True) or {}
-        today_str = get_today().isoformat()
+        today_dt = get_today()
+        today_str = today_dt.isoformat()
         uid = current_user.uid
 
-        existing = DailyLog.query.filter_by(uid=uid, log_date=today_str).first()
+        existing = DailyLog.query.filter_by(uid=uid, log_date=today_dt).first()
         if existing and existing.post_submitted:
             return jsonify({"status": "already_submitted", "message": "Post-workout already logged for today."})
 
-        log = _get_or_create_daily_log(uid, today_str)
+        log = _get_or_create_daily_log(uid, today_dt)
         log.post_submitted  = True
         log.post_duration   = _int(data.get("duration"))
         log.post_calories   = _int(data.get("calories"))
@@ -776,7 +800,7 @@ Now write the personalised coaching feedback paragraph:"""
         db.session.flush()
 
 
-        _update_streak(uid, today_str)
+        _update_streak(uid, today_dt)
 
     
         personal = current_user.personal
@@ -804,11 +828,11 @@ Now write the personalised coaching feedback paragraph:"""
     @login_required
     def api_steps():
         data = request.get_json(silent=True) or {}
-        today_str = get_today().isoformat()
+        today_dt = get_today()
         uid = current_user.uid
         steps = _int(data.get("steps"), 0)
 
-        log = _get_or_create_daily_log(uid, today_str)
+        log = _get_or_create_daily_log(uid, today_dt)
         log.steps = steps
         db.session.commit()
         return jsonify({"status": "ok", "steps": steps})
@@ -818,7 +842,7 @@ Now write the personalised coaching feedback paragraph:"""
     @login_required
     def api_workout_set():
         data = request.get_json(silent=True) or {}
-        today_str = get_today().isoformat()
+        today_dt = get_today()
         uid = current_user.uid
         exercise_name = _str(data.get("exercise"))
         set_index     = _int(data.get("set_index"))
@@ -828,14 +852,14 @@ Now write the personalised coaching feedback paragraph:"""
             return jsonify({"status": "error", "message": "Missing exercise or set_index"}), 400
 
         existing = WorkoutLog.query.filter_by(
-            uid=uid, log_date=today_str,
+            uid=uid, log_date=today_dt,
             exercise_name=exercise_name, set_index=set_index
         ).first()
 
         if completed:
             if not existing:
                 wl = WorkoutLog(
-                    uid=uid, log_date=today_str,
+                    uid=uid, log_date=today_dt,
                     exercise_name=exercise_name, set_index=set_index,
                     completed=True
                 )
@@ -969,7 +993,7 @@ Now write the personalised coaching feedback paragraph:"""
             return jsonify({"status": "ok", "meal_plan": str(meal_plan), "exercise_plan": str(exercise_plan)})
         except Exception as e:
             print("[MealPlan prediction error]", e)
-            return jsonify({"status": "error", "message": "Prediction failed. Please try again."}), 50
+            return jsonify({"status": "error", "message": "Prediction failed. Please try again."}), 500
 
     @app.route("/home/progress")
     @login_required
@@ -1248,6 +1272,9 @@ Now write the personalised coaching feedback paragraph:"""
                 personal.level = level
 
             gym_val = data.get('going_to_gym')
+            gym_val = _str(gym_val)
+            if gym_val:
+                gym_val = gym_val.lower()
             if gym_val in ('yes', 'no'):
                 personal.going_to_gym = gym_val
 
@@ -1267,7 +1294,14 @@ Now write the personalised coaching feedback paragraph:"""
 
             goal_val = _str(data.get('goal'))
             if goal_val:
-                personal.goal = goal_val
+                goal_val = goal_val.lower()
+                personal.goal = {
+                    "lose_weight": "lose",
+                    "build_muscle": "muscle",
+                    "improve_endurance": "endurance",
+                    "maintain_tone": "maintain",
+                    "sport_performance": "sport",
+                }.get(goal_val, goal_val)
 
             db.session.commit()
             return jsonify(success=True)
