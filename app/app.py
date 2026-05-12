@@ -14,8 +14,8 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 db = SQLAlchemy()
 
-BASE_DIR    = os.path.dirname(os.path.abspath(__file__))
-MODELS_DIR  = os.path.join(BASE_DIR, 'ml_models')
+BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
+MODELS_DIR = os.path.join(BASE_DIR, 'ml_models')
 
 def _load(filename):
     path = os.path.join(MODELS_DIR, filename)
@@ -24,25 +24,39 @@ def _load(filename):
         print(f"Loaded: {filename}")
         return obj
     except FileNotFoundError:
-        print(f" Not found: {path}")
+        print(f"Not found: {path}")
         return None
     except Exception as e:
         print(f"Failed to load {filename}: {e}")
         return None
 
-meal_model       = _load('logreg_model.pkl')
-le_exercise      = _load('label_encoder_exercise.pkl')
-le_meal          = _load('label_encoder_meal.pkl')
+meal_model  = _load('logreg_model.pkl')
+le_exercise = _load('label_encoder_exercise.pkl')
+le_meal     = _load('label_encoder_meal.pkl')
 
 
 def create_app():
     app = Flask(__name__, template_folder="templates", static_folder='static', static_url_path='/')
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://user:password@host/db'
-    app.secret_key = 'SOME KEY'
+     
+    app.config['SQLALCHEMY_DATABASE_URI']        = os.getenv('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    
+    ca_path = os.path.join(BASE_DIR, 'ca.pem')
+    if os.path.exists(ca_path):
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+            "connect_args": {
+                "ssl_ca": ca_path
+            }
+        }
+
+     
+    app.secret_key = os.getenv('SECRET_KEY')
 
     db.init_app(app)
 
+    
     login_manager = LoginManager()
     login_manager.init_app(app)
 
