@@ -39,10 +39,11 @@ def create_app():
     app = Flask(__name__, template_folder="templates", static_folder='static', static_url_path='/')
 
      
-    app.config['SQLALCHEMY_DATABASE_URI']        = os.getenv('DATABASE_URL')
+    db_url = os.getenv('DATABASE_URL', '')
+    db_url = db_url.split('?')[0]  
+    app.config['SQLALCHEMY_DATABASE_URI']        = db_url
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    
+        
     ca_path = os.path.join(BASE_DIR, 'ca.pem')
     if os.path.exists(ca_path):
         app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
