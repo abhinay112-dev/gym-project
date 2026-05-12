@@ -1,9 +1,9 @@
-#secert
-.env
+#secret
 .env
 .venv/
 __pycache__/
 *.pyc
-*.pkl
 instance/
 migrations/
+app/migrations/
+app/__pycache__/
